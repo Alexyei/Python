@@ -2,12 +2,28 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="82be47c1-01d2-4cb8-abca-cf3c2f2a71dc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Строки/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Строки/.idea/Строки.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Строки/Строки.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/if for/.idea/if for.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/ЗБ-ПИ1-1 Белоусов Python практическая работа №4 словари.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/ЗБ-ПИ1-1 Белоусов Python практическая работа №5 коллекции.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Коллекции/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Коллекции/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Коллекции/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Коллекции/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Коллекции/.idea/Коллекции.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Коллекции/Коллекции.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Контрольная работа/ЗБ-ПИ1-1 Белоусов 5 вариант контрольная.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Словари/.idea/Словари.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Списки/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Списки/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Списки/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Списки/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Списки/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Списки/.idea/Списки.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Файлы/.idea/Файлы.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Файлы/user_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Python проекты/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Python проекты/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Строки/Строки.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Практические работы 2 семестр/Строки/Строки.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -217,6 +233,8 @@
       <updated>1565507043469</updated>
       <workItem from="1590675262660" duration="89000" />
       <workItem from="1590675374001" duration="1897000" />
+      <workItem from="1592650119227" duration="449000" />
+      <workItem from="1593008175089" duration="2076000" />
     </task>
     <servers />
   </component>
@@ -228,9 +246,9 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="137" y="20" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1590676028273" />
-    <state x="379" y="189" key="com.intellij.ide.util.TipDialog" timestamp="1590675376041">
+    <state x="379" y="189" key="com.intellij.ide.util.TipDialog" timestamp="1593008175599">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="379" y="189" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1590675376041" />
+    <state x="379" y="189" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1593008175599" />
   </component>
 </project>

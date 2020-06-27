@@ -2,7 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da122fec-e567-4d66-beda-fbadbcd0290e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/if for/.idea/if for.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/ЗБ-ПИ1-1 Белоусов Python практическая работа №4 словари.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/ЗБ-ПИ1-1 Белоусов Python практическая работа №5 коллекции.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Коллекции/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Коллекции/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Коллекции/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Коллекции/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Коллекции/.idea/Коллекции.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Коллекции/Коллекции.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Словари/.idea/Словари.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Списки/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Списки/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Списки/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Списки/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Списки/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Списки/.idea/Списки.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Файлы/.idea/Файлы.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Файлы/user_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python Наоми Седер/Практические работы/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Python Наоми Седер/Практические работы/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Практические работы 2 семестр/Строки/Строки.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../Практические работы 2 семестр/Строки/Строки.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,12 +53,6 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="612" />
-    <option name="y" value="73" />
-    <option name="width" value="697" />
-    <option name="height" value="735" />
-  </component>
   <component name="ProjectId" id="1VnQcniwEVyv5z7fwZaB3kmOtzS" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -48,6 +62,7 @@
     <option name="showMembers" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -57,7 +72,29 @@
       <recent name="C:\Users\Наталия\Desktop\Новая папка\Python\Python проекты" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.k 10 гены">
+  <component name="RunManager" selected="Python.Бинарные файлы">
+    <configuration name="Бинарные файлы" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Python проекты" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Program Files\Python37\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Бинарные файлы.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Python проекты" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -168,42 +205,20 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="text to ANSI string" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Python проекты" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="C:\Program Files\Python37\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/text to ANSI string.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="Python.text to ANSI string" />
       <item itemvalue="Python.k 2 логи проца" />
       <item itemvalue="Python.k 3 одинаковые строки" />
       <item itemvalue="Python.k4 datetime" />
       <item itemvalue="Python.k 10 гены" />
+      <item itemvalue="Python.Бинарные файлы" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Бинарные файлы" />
         <item itemvalue="Python.k 10 гены" />
         <item itemvalue="Python.k4 datetime" />
         <item itemvalue="Python.k 3 одинаковые строки" />
         <item itemvalue="Python.k 2 логи проца" />
-        <item itemvalue="Python.text to ANSI string" />
       </list>
     </recent_temporary>
   </component>
@@ -231,6 +246,8 @@
       <updated>1553608961296</updated>
       <workItem from="1577886468016" duration="90000" />
       <workItem from="1584547260958" duration="5000" />
+      <workItem from="1592650593742" duration="100000" />
+      <workItem from="1592722172358" duration="1291000" />
     </task>
     <servers />
   </component>
@@ -238,9 +255,28 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="379" y="189" key="com.intellij.ide.util.TipDialog" timestamp="1584547262648">
+    <state width="1286" height="179" key="GridCell.Tab.0.bottom" timestamp="1592650694984">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="379" y="189" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1584547262648" />
+    <state width="1286" height="179" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1592650694984" />
+    <state width="1286" height="179" key="GridCell.Tab.0.center" timestamp="1592650694984">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1286" height="179" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1592650694984" />
+    <state width="1286" height="179" key="GridCell.Tab.0.left" timestamp="1592650694984">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1286" height="179" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1592650694984" />
+    <state width="1286" height="179" key="GridCell.Tab.0.right" timestamp="1592650694984">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1286" height="179" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1592650694984" />
+    <state x="379" y="189" key="com.intellij.ide.util.TipDialog" timestamp="1592722174580">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="379" y="189" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1592722174580" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Python_$_.coverage" NAME="Бинарные файлы Coverage Results" MODIFIED="1592650666889" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
   </component>
 </project>
