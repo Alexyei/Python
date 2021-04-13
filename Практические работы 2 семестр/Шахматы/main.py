@@ -529,8 +529,9 @@ def move():
             playersCount[currentPlayer] += current[-1]
 
     # пешка дошла до края доски
-    if 'P' in figure and current_position['y'] == 0:
-        figure = transformPawn()
+    if 'P' in figure:
+        if (currentPlayer=='White' and current_position['y'] == 0) or (currentPlayer=='Black' and current_position['y'] == 7):
+            figure = transformPawn()
 
     # обработка рокировки
     if 'K' in figure:
