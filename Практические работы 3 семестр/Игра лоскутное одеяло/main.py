@@ -2,7 +2,7 @@ import shutil
 
 import keyboard
 
-
+import copy
 import os
 from IPython.display import clear_output
 from colorama import Fore
