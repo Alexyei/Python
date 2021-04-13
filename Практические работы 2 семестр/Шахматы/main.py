@@ -114,6 +114,9 @@ currentPlayer = 'White'
 # currentBackColor = Back.BLUE
 playersCount = {'White': '', 'Black': '', }
 
+# шах
+check = False
+
 
 def init():
     global state
@@ -124,6 +127,7 @@ def init():
     # global currentForeColor
     # global currentBackColor
     global playersCount
+    global check
 
     state = [['bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR'],
              ['bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP'],
@@ -138,6 +142,7 @@ def init():
     # currentForeColor = Fore.GREEN
     # currentBackColor = Back.GREEN
     playersCount = {'White': '', 'Black': '', }
+    check = False
 
 
 def gameover():
@@ -165,6 +170,8 @@ def fullState(drawMoves=True, position=False):
     if drawMoves:
         return viewMoves(position)
     return state
+
+
 def getTableContent(drawMoves=True, position=False):
     def getCellStyle(cell):
         def getCurrentColor():
@@ -191,7 +198,7 @@ def getTableContent(drawMoves=True, position=False):
         # фигуры под боем
         elif cell.startswith('k'):
 
-            return Back.RED + ' ' + Fore.BLACK + cell[1:] + defaultForeColor + ' ' + Back.RESET
+            return Back.RED + ' ' + Fore.BLACK + cell[1:3] + defaultForeColor + ' ' + Back.RESET
         # текущая фигура
         elif cell.startswith('c'):
             return currentBackColor + ' ' + Fore.BLACK + cell[1:] + defaultForeColor + ' ' + Back.RESET
@@ -237,6 +244,8 @@ def getTableContent(drawMoves=True, position=False):
     #             0] + Back.RESET
 
     return tableContent
+
+
 def draw(tableContent):
     # print(tableContent)
     def getRow(row):
@@ -268,12 +277,15 @@ def draw(tableContent):
     os.system("cls")
     # print('1')
     print(table)
+
+
 def showPlayerCount():
     print(f"\t{Fore.BLUE}White: {playersCount['White']}\n\t{Fore.GREEN}Black: {playersCount['Black']}{Fore.RESET}")
 
 
 def myFigure(ceil):
     return (currentPlayer == 'White' and 'w' in ceil) or (currentPlayer == 'Black' and 'b' in ceil)
+
 
 # выбор своей фигуры для хода
 # возможно следует добавить метод canMove() для проверки есть ли у фигуры ходы if myFigure(state[i][j]) and canMove(state[i][j])
@@ -302,7 +314,7 @@ def selectFigure():
             # if marker['x'] != 3 and state[marker['x'] + 1][marker['y']] == 's':
             #     marker['x'] += 1
             for i in range(current_figure['y'] + 1, 8):
-                if myFigure(state[i][marker['x']]):
+                if myFigure(state[i][current_figure['x']]):
                     current_figure['y'] = i
                     break
             else:
@@ -356,17 +368,26 @@ def selectFigure():
         draw(getTableContent())
         showPlayerCount()
 
-def move():
+
+def myFigureArea(ceil):
+    return ceil == 'w' or 'k' in ceil
+
+
+def moveFigure():
     def nextPlayer():
         global currentPlayer
-        currentPlayer = str(int(currentPlayer) % 3 + 1)
+        if currentPlayer == 'White':
+            currentPlayer = 'Black'
+        else:
+            currentPlayer = 'White'
+
 
     def newMarker():
-        for i in range(4):
-            for j in range(5):
-                if state[i][j] == 's':
-                    marker['x'] = i
-                    marker['y'] = j
+        for i in range(8):
+            for j in range(8):
+                if myFigure(state[i][j]):
+                    current_figure['y'] = current_position['y'] = i
+                    current_figure['x'] = current_position['x'] = j
                     return
 
     state = fullState(True, True)
@@ -377,16 +398,16 @@ def move():
             # if marker['y'] != 4 and state[marker['x']][marker['y'] + 1] == 's':
             #     marker['y'] += 1
             # if marker['x'] != 4:
-            for j in range(marker['y'] + 1, 5):
-                if state[marker['x']][j] == 'm':
-                    marker['y'] = j
+            for j in range(current_position['x'] + 1, 8):
+                if myFigureArea(state[current_position['y']][j]):
+                    current_position['x'] = j
                     break
             else:
-                for i in range(marker['x'] + 1, 4):
-                    for j in range(5):
-                        if state[i][j] == 's':
-                            marker['x'] = i
-                            marker['y'] = j
+                for i in range(current_position['y'] + 1, 8):
+                    for j in range(8):
+                        if myFigureArea(state[i][j]):
+                            current_position['y'] = i
+                            current_position['x'] = j
                             break
                     else:
                         continue
@@ -394,16 +415,16 @@ def move():
         elif command == "s":
             # if marker['x'] != 3 and state[marker['x'] + 1][marker['y']] == 's':
             #     marker['x'] += 1
-            for i in range(marker['x'] + 1, 4):
-                if state[i][marker['y']] == 's':
-                    marker['x'] = i
+            for i in range(current_position['y'] + 1, 8):
+                if myFigureArea(state[i][current_position['x']]):
+                    current_position['y'] = i
                     break
             else:
-                for j in range(marker['y'] + 1, 5):
-                    for i in range(4):
-                        if state[i][j] == 's':
-                            marker['x'] = i
-                            marker['y'] = j
+                for j in range(current_position['x'] + 1, 8):
+                    for i in range(8):
+                        if myFigureArea(state[i][j]):
+                            current_position['y'] = i
+                            current_position['x'] = j
                             break
                     else:
                         continue
@@ -411,16 +432,16 @@ def move():
         elif command == "a":
             # if marker['y'] != 0 and state[marker['x']][marker['y'] - 1] == 's':
             #     marker['y'] -= 1
-            for j in range(marker['y'] - 1, -1, -1):
-                if state[marker['x']][j] == 's':
-                    marker['y'] = j
+            for j in range(current_position['x'] - 1, -1, -1):
+                if myFigureArea(state[current_position['y']][j]):
+                    current_position['x'] = j
                     break
             else:
-                for i in range(marker['x'] - 1, -1, -1):
-                    for j in range(4, -1, -1):
-                        if state[i][j] == 's':
-                            marker['x'] = i
-                            marker['y'] = j
+                for i in range(current_position['y'] - 1, -1, -1):
+                    for j in range(8, -1, -1):
+                        if myFigureArea(state[i][j]):
+                            current_position['y'] = i
+                            current_position['x'] = j
                             break
                     else:
                         continue
@@ -428,28 +449,103 @@ def move():
         elif command == "w":
             # if marker['x'] != 0 and state[marker['x'] - 1][marker['y']] == 's':
             #     marker['x'] -= 1
-            for i in range(marker['x'] - 1, -1, -1):
-                if state[i][marker['y']] == 's':
-                    marker['x'] = i
+            for i in range(current_position['y'] - 1, -1, -1):
+                if myFigureArea(state[i][current_position['x']]):
+                    current_position['y'] = i
                     break
             else:
-                for j in range(marker['y'] - 1, -1, -1):
-                    for i in range(3, -1, -1):
-                        if state[i][j] == 's':
-                            marker['x'] = i
-                            marker['y'] = j
+                for j in range(current_position['x'] - 1, -1, -1):
+                    for i in range(7, -1, -1):
+                        if myFigureArea(state[i][j]):
+                            current_position['y'] = i
+                            current_position['x'] = j
                             break
                     else:
                         continue
                     break
         elif command == '':
-            state[marker['x']][marker['y']] = currentPlayer
-            changePlayerCount()
+            if current_figure == current_position:
+                return False
+
+            move()
+
             break
+        elif command == 'q':
+            return False
         draw(getTableContent())
         showPlayerCount()
     nextPlayer()
     newMarker()
+    return True
+
+
+def transformPawn():
+    if currentPlayer == 'White':
+        return 'wQ'
+    else:
+        return 'bQ'
+
+
+def IsCheck():
+    return False
+
+# рокировка (передвигаем ладью), король движется в методе move
+def castling(short=True):
+    if currentPlayer == 'White':
+        # короткая рокировка
+        if short:
+            state[7][5] = state[7][7]
+            state[7][7] = '0'
+        # длиная
+        else:
+            state[7][3] = state[7][0]
+            state[7][0] = '0'
+    else:
+        # короткая рокировка
+        if short:
+            state[0][5] = state[0][7]
+            state[0][7] = '0'
+        # длиная
+        else:
+            state[0][3] = state[0][0]
+            state[0][0] = '0'
+
+
+# приватный метод
+def move():
+    global check
+
+    current = state[current_position['y']][current_position['x']]
+    figure = state[current_figure['y']][current_figure['x']]
+
+    # фигура бьёт другую
+    if 'k' in current:
+        # взятие на проходе
+        if current == 'k':
+            playersCount[currentPlayer] += state[current_position['y'] + 1][current_position['x']]
+            state[current_position['y'] + 1][current_position['x']] = '0'
+        # другие случаи
+        else:
+            playersCount[currentPlayer] += current[-1]
+
+    # пешка дошла до края доски
+    if 'P' in figure and current_position['y'] == 0:
+        figure = transformPawn()
+
+    # обработка рокировки
+    if 'K' in figure:
+        if current_position['x'] - current_figure['x'] == 2:
+            castling()
+        elif current_figure['x'] - current_position['x'] == 2:
+            castling(False)
+
+    state[current_position['y']][current_position['x']] = figure
+    state[current_figure['y']][current_figure['x']] = '0'
+
+    # проверить привёл ли ход к шаху
+    check = IsCheck()
+
+
 
 def game():
     try:
@@ -457,14 +553,18 @@ def game():
         while True:
             init()
 
-            # while not gameover():
-            draw(getTableContent())
-            showPlayerCount()
+            while not gameover():
+                draw(getTableContent())
+                showPlayerCount()
+                selectFigure()
+                while not moveFigure():
+                    pass
+
             # move()
             # state[marker['x']][marker['y']] = currentPlayer
             # changePlayerCount()
             # draw(getTableContent(False))
-            # showPlayerCount()
+            showPlayerCount()
             # showWinner()
             input()
     except KeyboardInterrupt:
