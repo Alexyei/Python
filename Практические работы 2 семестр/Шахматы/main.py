@@ -155,12 +155,93 @@ def gameover():
     return mat() or pat()
 
 
+def isEnemy(ceil):
+    return not myFigure(ceil)
+
+def isEmptyCeil(ceil):
+    return ceil == '0'
+
 # отобразить возможные ходы и выбор хода (position)
 def fullState(drawMoves=True, position=False):
     # if not (drawMoves or moveMode):
 
     # показать текущие ходы, position = TRUE показать перемещение фигуры (при выборе хода)
-    def viewMoves(position=True):
+    def getMoves(position=True):
+
+        def figureMoves():
+            current = state[current_figure['y']][current_figure['x']]
+            moves = []
+            kills = []
+
+            def checkCeilForAction(y ,x):
+                if isEmptyCeil(state[y][x]):
+                    moves.append((y, x))
+                    return True
+                else:
+                    if isEnemy(state[y][x]):
+                        kills.append((y, x))
+                    return False
+
+            def checkPawnAction():
+                pass
+
+            def checkRookAction():
+                # проверка возможности хода вправо
+                for j in range(current_figure['x'] + 1, 8):
+                    # if isEmptyCeil(state[current_figure['y']][j]):
+                    #     moves.append((current_figure['y'],j))
+                    # else:
+                    #    if isEnemy(state[current_figure['y']][j]):
+                    #        kills.append((current_figure['y'], j))
+                    #    break
+                    if checkCeilForAction(current_figure['y'], j):
+                        break
+                # проверка возможности хода влево
+                for j in range(current_figure['x'] - 1, -1, -1):
+                    if checkCeilForAction(current_figure['y'], j):
+                        break
+                # проверка возможности хода ыниз
+                for i in range(current_figure['y'] + 1, 8):
+                    if checkCeilForAction(i, current_figure['x']):
+                        break
+                # проверка возможности хода вверх
+                for i in range(current_figure['y'] - 1, -1, -1):
+                    if checkCeilForAction(i, current_figure['x']):
+                        break
+
+            # проверка возможныъ ходов для пешки
+            if 'P' in current:
+                checkPawnAction()
+            # проверка возможныъ ходов для ладьи
+            elif 'R' in current:
+                # # проверка возможности хода вправо
+                # for j in range(current_figure['x']+1,8):
+                #     # if isEmptyCeil(state[current_figure['y']][j]):
+                #     #     moves.append((current_figure['y'],j))
+                #     # else:
+                #     #    if isEnemy(state[current_figure['y']][j]):
+                #     #        kills.append((current_figure['y'], j))
+                #     #    break
+                #     if checkCeilForAction(current_figure['y'],j):
+                #         break
+                # # проверка возможности хода влево
+                # for j in range(current_figure['x'] - 1, -1, -1):
+                #     if checkCeilForAction(current_figure['y'],j):
+                #         break
+                # # проверка возможности хода ыниз
+                # for i in range(current_figure['y'] + 1, 8):
+                #     if checkCeilForAction(i,current_figure['x']):
+                #         break
+                # # проверка возможности хода вверх
+                # for i in range(current_figure['y'] - 1, -1, -1):
+                #     if checkCeilForAction(i,current_figure['x']):
+                #         break
+                checkRockAction()
+
+
+
+
+
         return [['bR', 'bN', 'bB', 'bQ', 'sbK', 'bB', 'bN', 'kbR'],
                 ['bP', 'kbP', 'bP', 'bP', 'cbP', 'bP', 'bP', 'bP'],
                 ['0'] * 8, ['m'] * 8, ['0'] * 8, ['0'] * 8,
@@ -168,7 +249,7 @@ def fullState(drawMoves=True, position=False):
                 ['wR', 'wN', 'kwB', 'wQ', 'swK', 'cwB', 'wN', 'wR']]
 
     if drawMoves:
-        return viewMoves(position)
+        return getMoves(position)
     return state
 
 
@@ -189,6 +270,9 @@ def getTableContent(drawMoves=True, position=False):
         # пустая клетка
         if cell == '0':
             return '    '
+        # взятие на проходе
+        elif cell == 'k0':
+            return Back.RED + '    ' + Back.RESET
         # возможный ход
         elif cell == 'm':
             return currentBackColor + '    ' + Back.RESET
