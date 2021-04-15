@@ -104,7 +104,7 @@ def showRules():
 
 defaultForeColor = Fore.CYAN
 defaultBackColor = Back.BLACK
-state = [[]]
+state = [[],[]]
 # выбранная фигура
 current_figure = {'y': 6, 'x': 4}
 # выбранный ход фигурой
@@ -462,19 +462,39 @@ def figureMoves(figurePosition=None):
 
 
 # отобразить возможные ходы и выбор хода (position)
-def fullState(drawMoves=True, position=False):
+def getFullState(drawMoves=True, position=False):
     # if not (drawMoves or moveMode):
 
     # показать текущие ходы, position = TRUE показать перемещение фигуры (при выборе хода)
-    def getMoves(position=True):
-        return [['bR', 'bN', 'bB', 'bQ', 'sbK', 'bB', 'bN', 'kbR'],
-                ['bP', 'kbP', 'bP', 'bP', 'cbP', 'bP', 'bP', 'bP'],
-                ['0'] * 8, ['m'] * 8, ['0'] * 8, ['0'] * 8,
-                ['wP', 'wP', 'wP', 'wP', 'kwP', 'wP', 'wP', 'wP'],
-                ['wR', 'wN', 'kwB', 'wQ', 'swK', 'cwB', 'wN', 'wR']]
+    def getStateWithMoves():
+        moves, kills = figureMovesWithCheck()
+        fullState = copy.deepcopy(state)
+        for y,x in moves:
+            fullState[y][x] = 'm'
+        for y,x in kills:
+            fullState[y][x] = 'k'+ fullState[y][x]
+        # if check:
+        #     y, x = myKingPosition()
+        #     fullState[y][x] = 's'+ fullState[y][x]
+        # текущая фигура
+        fullState[current_position['y']][current_position['x']] = 'c'+fullState[current_position['y']][current_position['x']]
+
+        # мои фигуры находящиеся под боем
+        myFiguries = gelAllMyFiguries()
+        for figure in myFiguries:
+            if whoCanKilled(figure):
+                y, x = figure
+                fullState[y][x] = 'a'+fullState[y][x]
+
+        # return [['bR', 'bN', 'bB', 'bQ', 'sbK', 'bB', 'bN', 'kbR'],
+        #         ['bP', 'kbP', 'bP', 'bP', 'cbP', 'bP', 'bP', 'bP'],
+        #         ['0'] * 8, ['m'] * 8, ['0'] * 8, ['0'] * 8,
+        #         ['wP', 'wP', 'wP', 'wP', 'kwP', 'wP', 'wP', 'wP'],
+        #         ['wR', 'wN', 'kwB', 'wQ', 'swK', 'cwB', 'wN', 'wR']]
+        return fullState
 
     if drawMoves:
-        return getMoves(position)
+        return getStateWithMoves()
     return state
 
 
@@ -501,22 +521,25 @@ def getTableContent(drawMoves=True, position=False):
         # возможный ход
         elif cell == 'm':
             return currentBackColor + '    ' + Back.RESET
-        # шах
-        elif cell.startswith('s'):
-            return Back.MAGENTA + ' ' + Fore.BLACK + cell[1:] + defaultForeColor + ' ' + Back.RESET
+
         # фигуры под боем
         elif cell.startswith('k'):
-
             return Back.RED + ' ' + Fore.BLACK + cell[1:3] + defaultForeColor + ' ' + Back.RESET
         # текущая фигура
         elif cell.startswith('c'):
             return currentBackColor + ' ' + Fore.BLACK + cell[1:] + defaultForeColor + ' ' + Back.RESET
+        # шах
+        elif cell.startswith('a') and 'K' in cell:
+            return Back.MAGENTA + ' ' + Fore.BLACK + cell[1:] + defaultForeColor + ' ' + Back.RESET
+        # aim фигуру которую может съесть противник на следующем ходу
+        elif cell.startswith('a'):
+            return ' ' + Fore.RED + cell[1:] + defaultForeColor + ' '
         # обычные фигуры
         else:
             return ' ' + currentForeColor + cell + defaultForeColor + ' '
 
-    temp_state = fullState(drawMoves=True, position=False)
-    tableContent = [[getCellStyle(temp_state[i][j]) for j in range(8)] for i in range(8)]
+    fullState = getFullState(drawMoves=True, position=False)
+    tableContent = [[getCellStyle(fullState[i][j]) for j in range(8)] for i in range(8)]
 
     # cellTypes = {0: '    ',
     #              'm': currentBackColor+'    '+defaultBackColor,
@@ -711,7 +734,7 @@ def moveFigure():
                     current_figure['x'] = current_position['x'] = j
                     return
 
-    state = fullState(True, True)
+    state = getFullState(True, True)
 
     while True:
         command = input()
@@ -807,8 +830,8 @@ def transformPawn():
         return 'bQ'
 
 
-def IsCheck():
-    return False
+# def IsCheck():
+#     return False
 
 
 # рокировка (передвигаем ладью), король движется в методе move
@@ -914,7 +937,7 @@ def game():
             # move()
             # state[marker['x']][marker['y']] = currentPlayer
             # changePlayerCount()
-            # draw(getTableContent(False))
+            draw(getTableContent(False))
             showPlayerCount()
             showWinner()
             input()
