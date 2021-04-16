@@ -364,11 +364,11 @@ def figureMoves(figurePosition=None):
 
     def getBishopAction():
         # проверка возможности хода вниз и вправо
-        for i, j in zip(range(y + 1, 8),range(x + 1, 8)):
+        for i, j in zip(range(y + 1, 8), range(x + 1, 8)):
             if checkCeilForAction(i, j):
                 break
         # проверка возможности хода вверх и вправо
-        for i, j in zip(range(y - 1, -1, -1),range(x + 1, 8)):
+        for i, j in zip(range(y - 1, -1, -1), range(x + 1, 8)):
             if checkCeilForAction(i, j):
                 break
         # проверка возможности хода вверх и влево
@@ -381,7 +381,13 @@ def figureMoves(figurePosition=None):
                 break
 
     def getKnightAction():
-        pass
+        def knightMoves(y, x):
+            return {(y + 2, x + 1), (y + 2, x - 1), (y - 2, x + 1), (y - 2, x - 1), (y + 1, x + 2), (y - 1, x + 2),
+                    (y + 1, x - 2), (y - 1, x - 2)}
+
+        moves = find_neighbors(y, x,2).intersection(knightMoves(y,x))
+        for move in moves:
+            checkCeilForAction(move)
 
     def getQueenAction():
         getRookAction()
@@ -405,21 +411,25 @@ def figureMoves(figurePosition=None):
             if checkCeilForAction(i, x):
                 break
 
-    def getKingAction():
-        def find_neighbors(i, j, dist=1):
-            # range(max(0, i - 1):min(i + dist+1,8)
-            result = set()
-            for y in range(max(0, i - 1),min(i + dist+1,8)):
-                for x in range(max(0, j - dist),min(j + dist + 1,8)):
-                    result.add((y, x))
-            result.remove((i,j))
-            return result
-            # return [row[max(0, j - dist):j + dist] for row in m[max(0, i - 1):i + dist]]
+    def find_neighbors(i, j, dist=1):
+        # range(max(0, i - 1):min(i + dist+1,8)
+        result = set()
+        for y in range(max(0, i - 1), min(i + dist + 1, 8)):
+            for x in range(max(0, j - dist), min(j + dist + 1, 8)):
+                result.add((y, x))
+        result.remove((i, j))
+        return result
+        # return [row[max(0, j - dist):j + dist] for row in m[max(0, i - 1):i + dist]]
 
+    def getKingAction():
         neighbors = find_neighbors(y, x)
         for move in neighbors:
             if inSafe((y, x), move):
                 checkCeilForAction(y, move)
+
+        # рокировку нельзя делать под шахом
+        if not check:
+            
         # if x != 7 and inSafe((y,x),(y,x+1)):
         #     checkCeilForAction(y,x+1)
         # if x != 0 and inSafe((y,x),(y,x-1)):
