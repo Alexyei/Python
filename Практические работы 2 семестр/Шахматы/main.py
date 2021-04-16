@@ -422,6 +422,21 @@ def figureMoves(figurePosition=None):
         # return [row[max(0, j - dist):j + dist] for row in m[max(0, i - 1):i + dist]]
 
     def getKingAction():
+        def checkCastling():
+            def checkLongCastling():
+                if isFirstMove(y, x) and isFirstMove(y, 0):
+                    if isEmptyCeil((y, x - 1)) and isEmptyCeil((y, x - 2)) and isEmptyCeil((y, x - 3)):
+                        if inSafe((y, x), (y, x - 1)):
+                            moves.append((y, x - 2))
+            def checkShortCastling():
+                if isFirstMove(y, x) and isFirstMove(y, 7):
+                    if isEmptyCeil((y,x+1)) and isEmptyCeil((y,x+2)):
+                        if inSafe((y,x),(y,x+1)):
+                            moves.append((y, x+2))
+
+            checkLongCastling()
+            checkShortCastling()
+
         neighbors = find_neighbors(y, x)
         for move in neighbors:
             if inSafe((y, x), move):
@@ -429,7 +444,7 @@ def figureMoves(figurePosition=None):
 
         # рокировку нельзя делать под шахом
         if not check:
-            
+            checkCastling()
         # if x != 7 and inSafe((y,x),(y,x+1)):
         #     checkCeilForAction(y,x+1)
         # if x != 0 and inSafe((y,x),(y,x-1)):
