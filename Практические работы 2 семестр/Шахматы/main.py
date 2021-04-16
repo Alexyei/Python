@@ -406,11 +406,17 @@ def figureMoves(figurePosition=None):
                 break
 
     def getKingAction():
-        def find_neighbors(m, i, j, dist=1):
-            return [((row, col) for col in row[max(0, j - dist):j + dist]) for row in m[max(0, i - 1):i + dist]]
+        def find_neighbors(i, j, dist=1):
+            # range(max(0, i - 1):min(i + dist+1,8)
+            result = set()
+            for y in range(max(0, i - 1),min(i + dist+1,8)):
+                for x in range(max(0, j - dist),min(j + dist + 1,8)):
+                    result.add((y, x))
+            result.remove((i,j))
+            return result
             # return [row[max(0, j - dist):j + dist] for row in m[max(0, i - 1):i + dist]]
 
-        neighbors = find_neighbors(state, y, x)
+        neighbors = find_neighbors(y, x)
         for move in neighbors:
             if inSafe((y, x), move):
                 checkCeilForAction(y, move)
