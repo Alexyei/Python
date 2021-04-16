@@ -104,7 +104,7 @@ def showRules():
 
 defaultForeColor = Fore.CYAN
 defaultBackColor = Back.BLACK
-state = [[],[]]
+state = [[], []]
 # выбранная фигура
 current_figure = {'y': 6, 'x': 4}
 # выбранный ход фигурой
@@ -153,7 +153,7 @@ def init():
 
 
 def gameover():
-    myFiguries =gelAllMyFiguries()
+    myFiguries = gelAllMyFiguries()
     for figure in myFiguries:
         moves, kills = figureMovesWithCheck(figure)
         if moves or kills:
@@ -161,7 +161,7 @@ def gameover():
     return True
 
 
-def isEnemy(ceil,player=currentPlayer):
+def isEnemy(ceil, player=currentPlayer):
     return (player == 'White' and 'b' in ceil) or (player == 'Black' and 'w' in ceil)
 
 
@@ -172,8 +172,10 @@ def isEmptyCeil(ceil):
 def isFirstMove(y, x):
     return not ((y, x) in moved_figure)
 
-def isMyFigure(ceil,player=currentPlayer):
+
+def isMyFigure(ceil, player=currentPlayer):
     return (player == 'White' and 'w' in ceil) or (player == 'Black' and 'b' in ceil)
+
 
 def getMyEnemy():
     if currentPlayer == 'White':
@@ -181,23 +183,27 @@ def getMyEnemy():
     else:
         return 'White'
 
+
 def myKingPosition(player=currentPlayer):
     for y in range(8):
         for x in range(8):
             if 'K' in state[y][x] and isMyFigure(state[y][x], player):
                 return y, x
 
+
 def getAllEnemies(player=currentPlayer):
     enemies = []
     for y in range(8):
         for x in range(8):
             if isEnemy(state[y][x], player):
-                enemies.append((y,x))
+                enemies.append((y, x))
 
     return enemies
 
+
 def gelAllMyFiguries():
     return getAllEnemies(getMyEnemy())
+
 
 def whoCanKilled(aim):
     enemies = getAllEnemies(getPlayerByFigure(state[aim[0]][aim[1]]))
@@ -213,6 +219,7 @@ def whoCanKilled(aim):
 
     return killers
 
+
 def inSafe(aim, move=None, guard=None):
     global state
     saved_state = copy.deepcopy(state)
@@ -225,7 +232,7 @@ def inSafe(aim, move=None, guard=None):
         if currentPlayer == 'White':
             queen = 'wQ'
         else:
-            queen ='bQ'
+            queen = 'bQ'
         state[guard[0]][guard[1]] = queen
 
     result = not whoCanKilled(aim)
@@ -236,10 +243,12 @@ def inSafe(aim, move=None, guard=None):
 
     return result
 
+
 def getPlayerByFigure(figure):
     if 'w' in figure:
         return 'White'
     return 'Black'
+
 
 # допустимые ходы, когда королю объявлен шах
 def figureMovesWithCheck(figurePosition=None):
@@ -261,11 +270,11 @@ def figureMovesWithCheck(figurePosition=None):
 
     if 'K' in current:
         for move in temp_moves:
-            if inSafe(myKing,move):
+            if inSafe(myKing, move):
                 moves.append(move)
 
         for kill in temp_kills:
-            if inSafe(myKing,kill):
+            if inSafe(myKing, kill):
                 kills.append(kill)
     else:
         for move in temp_moves:
@@ -273,7 +282,7 @@ def figureMovesWithCheck(figurePosition=None):
                 moves.append(move)
 
         for kill in temp_kills:
-            if inSafe(myKing,  guard=kill):
+            if inSafe(myKing, guard=kill):
                 kills.append(kill)
 
     return moves, kills
@@ -302,10 +311,8 @@ def figureMoves(figurePosition=None):
 
     def getPawnAction():
         def getBlackPawnAction():
-            pass
-
-        def getWhitePawnAction():
             # проверка возможности хода на одну клетку вперёд
+            # нет проверки выходит, ли пешка за край доски, потому что она трансформируется в другую фигуру на крайней диагонали
             if isEmptyCeil(state[y + 1][x]):
                 moves.append((y + 1, x))
             # проверка возможности хода на две клетки вперёд
@@ -327,10 +334,58 @@ def figureMoves(figurePosition=None):
                 elif pawnJump['x'] == x - 1:
                     kills.append((y + 1, x - 1))
 
+        def getWhitePawnAction():
+            # проверка возможности хода на одну клетку вперёд
+            if isEmptyCeil(state[y - 1][x]):
+                moves.append((y - 1, x))
+            # проверка возможности хода на две клетки вперёд
+            if isFirstMove(y, x) and isEmptyCeil(
+                    state[y - 2][x]):
+                moves.append((y - 2, x))
+            # проверка возможности съесть фигуру справа от пешки
+            if x != 7 and isEnemy(state[y - 1][x + 1], player):
+                kills.append((y - 1, x + 1))
+            # проверка возможности съесть фигуру слева от пешки
+            if x != 0 and isEnemy(state[y - 1][x - 1], player):
+                kills.append((y - 1, x + 1))
+            # проверка возможности взятия на проходе
+            if pawnJump and pawnJump['y'] == y:
+                # взятие на проходе справа
+                if pawnJump['x'] == x + 1:
+                    kills.append((y - 1, x + 1))
+                # взятие на проходе слева
+                elif pawnJump['x'] == x - 1:
+                    kills.append((y - 1, x - 1))
+
         if currentPlayer == 'White':
             return getWhitePawnAction()
         else:
             return getBlackPawnAction()
+
+    def getBishopAction():
+        # проверка возможности хода вниз и вправо
+        for i, j in zip(range(y + 1, 8),range(x + 1, 8)):
+            if checkCeilForAction(i, j):
+                break
+        # проверка возможности хода вверх и вправо
+        for i, j in zip(range(y - 1, -1, -1),range(x + 1, 8)):
+            if checkCeilForAction(i, j):
+                break
+        # проверка возможности хода вверх и влево
+        for i, j in zip(range(y - 1, -1, -1), range(x - 1, -1, -1)):
+            if checkCeilForAction(j, j):
+                break
+        # проверка возможности хода вниз и влево
+        for i, j in zip(range(y + 1, 8), range(x - 1, -1, -1)):
+            if checkCeilForAction(j, j):
+                break
+
+    def getKnightAction():
+        pass
+
+    def getQueenAction():
+        getRookAction()
+        getBishopAction()
 
     def getRookAction():
         # проверка возможности хода вправо
@@ -350,14 +405,41 @@ def figureMoves(figurePosition=None):
             if checkCeilForAction(i, x):
                 break
 
-    # проверка возможныъ ходов для пешки
+    def getKingAction():
+        def find_neighbors(m, i, j, dist=1):
+            return [((row, col) for col in row[max(0, j - dist):j + dist]) for row in m[max(0, i - 1):i + dist]]
+            # return [row[max(0, j - dist):j + dist] for row in m[max(0, i - 1):i + dist]]
+
+        neighbors = find_neighbors(state, y, x)
+        for move in neighbors:
+            if inSafe((y, x), move):
+                checkCeilForAction(y, move)
+        # if x != 7 and inSafe((y,x),(y,x+1)):
+        #     checkCeilForAction(y,x+1)
+        # if x != 0 and inSafe((y,x),(y,x-1)):
+        #     checkCeilForAction(y,x-1)
+
+    # проверка возможности ходов для пешки
     if 'P' in current:
         getPawnAction()
-    # проверка возможныъ ходов для ладьи
+    # проверка возможности ходов для слона
+    elif 'B' in current:
+        getBishopAction()
+    # проверка возможности ходов для коня
+    elif 'N' in current:
+        getKnightAction()
+    # проверка возможности ходов для ферзя
+    elif 'Q' in current:
+        getQueenAction()
+    # проверка возможности ходов для ладьи
     elif 'R' in current:
         getRookAction()
+    # проверка возможности ходов для короля
+    elif 'K' in current:
+        getKingAction()
 
     return moves, kills
+
 
 # def figureMoves():
 #     current = state[current_figure['y']][current_figure['x']]
@@ -469,22 +551,23 @@ def getFullState(drawMoves=True, position=False):
     def getStateWithMoves():
         moves, kills = figureMovesWithCheck()
         fullState = copy.deepcopy(state)
-        for y,x in moves:
+        for y, x in moves:
             fullState[y][x] = 'm'
-        for y,x in kills:
-            fullState[y][x] = 'k'+ fullState[y][x]
+        for y, x in kills:
+            fullState[y][x] = 'k' + fullState[y][x]
         # if check:
         #     y, x = myKingPosition()
         #     fullState[y][x] = 's'+ fullState[y][x]
         # текущая фигура
-        fullState[current_position['y']][current_position['x']] = 'c'+fullState[current_position['y']][current_position['x']]
+        fullState[current_position['y']][current_position['x']] = 'c' + fullState[current_position['y']][
+            current_position['x']]
 
         # мои фигуры находящиеся под боем
         myFiguries = gelAllMyFiguries()
         for figure in myFiguries:
             if whoCanKilled(figure):
                 y, x = figure
-                fullState[y][x] = 'a'+fullState[y][x]
+                fullState[y][x] = 'a' + fullState[y][x]
 
         # return [['bR', 'bN', 'bB', 'bQ', 'sbK', 'bB', 'bN', 'kbR'],
         #         ['bP', 'kbP', 'bP', 'bP', 'cbP', 'bP', 'bP', 'bP'],
@@ -521,19 +604,19 @@ def getTableContent(drawMoves=True, position=False):
         # возможный ход
         elif cell == 'm':
             return currentBackColor + '    ' + Back.RESET
-
         # фигуры под боем
+        # 1:3 cswK acwN
         elif cell.startswith('k'):
-            return Back.RED + ' ' + Fore.BLACK + cell[1:3] + defaultForeColor + ' ' + Back.RESET
+            return Back.RED + ' ' + Fore.BLACK + cell[-2:] + defaultForeColor + ' ' + Back.RESET
         # текущая фигура
         elif cell.startswith('c'):
-            return currentBackColor + ' ' + Fore.BLACK + cell[1:] + defaultForeColor + ' ' + Back.RESET
+            return currentBackColor + ' ' + Fore.BLACK + cell[-2:] + defaultForeColor + ' ' + Back.RESET
         # шах
         elif cell.startswith('a') and 'K' in cell:
-            return Back.MAGENTA + ' ' + Fore.BLACK + cell[1:] + defaultForeColor + ' ' + Back.RESET
+            return Back.MAGENTA + ' ' + Fore.BLACK + cell[-2:] + defaultForeColor + ' ' + Back.RESET
         # aim фигуру которую может съесть противник на следующем ходу
         elif cell.startswith('a'):
-            return ' ' + Fore.RED + cell[1:] + defaultForeColor + ' '
+            return ' ' + Fore.RED + cell[-2:] + defaultForeColor + ' '
         # обычные фигуры
         else:
             return ' ' + currentForeColor + cell + defaultForeColor + ' '
@@ -620,9 +703,10 @@ def showPlayerCount():
 #     moves, kills = figureMoves()
 #     return moves or kills
 
-def canMove(figurePosition = None):
+def canMove(figurePosition=None):
     moves, kills = figureMoves(figurePosition)
     return moves or kills
+
 
 # выбор своей фигуры для хода
 # возможно следует добавить метод canMove() для проверки есть ли у фигуры ходы if myFigure(state[i][j]) and canMove(state[i][j])
@@ -860,6 +944,7 @@ def isCheck():
     king = myKingPosition(getMyEnemy())
     return whoCanKilled(king)
 
+
 # приватный метод
 def move():
     global check
@@ -912,10 +997,11 @@ def move():
     # проверить привёл ли ход к шаху
     check = isCheck()
 
+
 def showWinner():
     # мат
     if check:
-        print(currentPlayer+" win!")
+        print(currentPlayer + " win!")
     # пат
     else:
         print('draw')
