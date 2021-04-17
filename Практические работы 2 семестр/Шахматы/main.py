@@ -737,8 +737,8 @@ def selectFigure():
                         # print("selected"+str(i)+" "+str(j))
                         break
             else:
-                for i in range(8):
-                # for i in range(current_figure['y'] + 1, 8):
+                # for i in range(8):
+                for i in range(current_figure['y'] + 1, 8):
                     for j in range(8):
 
                         if isMyFigure(state[i][j]):
@@ -750,6 +750,19 @@ def selectFigure():
                     else:
                         continue
                     break
+                else:
+                    for i in range(0, current_figure['y'] + 1):
+                        for j in range(8):
+
+                            if isMyFigure(state[i][j]):
+                                current_figure['y'] = i
+                                current_figure['x'] = j
+                                if canMove():
+                                    # print("selected" + str(i) + " " + str(j))
+                                    break
+                        else:
+                            continue
+                        break
         elif command == "s":
             for i in range(current_figure['y'] + 1, 8):
                 if isMyFigure(state[i][current_figure['x']]):
@@ -757,8 +770,8 @@ def selectFigure():
                     if canMove():
                         break
             else:
-                # for j in range(current_figure['x'] + 1, 8):
-                for j in range(8):
+                for j in range(current_figure['x'] + 1, 8):
+                # for j in range(8):
                     for i in range(8):
                         if isMyFigure(state[i][j]):
                             current_figure['y'] = i
@@ -768,6 +781,18 @@ def selectFigure():
                     else:
                         continue
                     break
+                else:
+                    for j in range(0, current_figure['x'] + 1):
+                        # for j in range(8):
+                        for i in range(8):
+                            if isMyFigure(state[i][j]):
+                                current_figure['y'] = i
+                                current_figure['x'] = j
+                                if canMove():
+                                    break
+                        else:
+                            continue
+                        break
         elif command == "a":
             for j in range(current_figure['x'] - 1, -1, -1):
                 if isMyFigure(state[current_figure['y']][j]):
@@ -775,8 +800,8 @@ def selectFigure():
                     if canMove():
                         break
             else:
-                for i in range(7, -1, -1):
-                # for i in range(current_figure['y'] - 1, -1, -1):
+                # for i in range(7, -1, -1):
+                for i in range(current_figure['y'] - 1, -1, -1):
                     for j in range(7, -1, -1):
                         # print(str(i) + str(j))
                         if isMyFigure(state[i][j]):
@@ -788,6 +813,19 @@ def selectFigure():
                     else:
                         continue
                     break
+                else:
+                    for i in range(7, current_figure['y'], -1):
+                        # print("AAAA")
+                        for j in range(7, -1, -1):
+                            if isMyFigure(state[i][j]):
+                                current_figure['y'] = i
+                                current_figure['x'] = j
+                                if canMove():
+                                    # print("selected" + str(i) + " " + str(j))
+                                    break
+                        else:
+                            continue
+                        break
         elif command == "w":
 
             for i in range(current_figure['y'] - 1, -1, -1):
@@ -796,8 +834,8 @@ def selectFigure():
                     if canMove():
                         break
             else:
-                # for j in range(current_figure['x'] - 1, -1, -1):
-                for j in range(7, -1, -1):
+                for j in range(current_figure['x'] - 1, -1, -1):
+                # for j in range(7, -1, -1):
                     for i in range(7, -1, -1):
                         if isMyFigure(state[i][j]):
                             current_figure['y'] = i
@@ -807,6 +845,18 @@ def selectFigure():
                     else:
                         continue
                     break
+                else:
+                    for j in range(7, current_figure['x'], -1):
+                        # for j in range(7, -1, -1):
+                        for i in range(7, -1, -1):
+                            if isMyFigure(state[i][j]):
+                                current_figure['y'] = i
+                                current_figure['x'] = j
+                                if canMove():
+                                    break
+                        else:
+                            continue
+                        break
         elif command == '':
             # state[marker['x']][marker['y']] = currentPlayer
             # changePlayerCount()
@@ -853,8 +903,8 @@ def moveFigure():
                     current_position['x'] = j
                     break
             else:
-                # for i in range(current_position['y'] + 1, 8):
-                for i in range(8):
+                for i in range(current_position['y'] + 1, 8):
+                # for i in range(8):
                     for j in range(8):
                         if isMyFigureArea(state[i][j]):
                             current_position['y'] = i
@@ -863,6 +913,16 @@ def moveFigure():
                     else:
                         continue
                     break
+                else:
+                    for i in range(0, current_figure['y'] + 1):
+                        for j in range(8):
+                            if isMyFigureArea(state[i][j]):
+                                current_position['y'] = i
+                                current_position['x'] = j
+                                break
+                        else:
+                            continue
+                        break
         elif command == "s":
             # print(state)
             for i in range(current_position['y'] + 1, 8):
@@ -872,8 +932,8 @@ def moveFigure():
                     current_position['y'] = i
                     break
             else:
-                # for j in range(current_position['x'] + 1, 8):
-                for j in range(8):
+                for j in range(current_position['x'] + 1, 8):
+                # for j in range(8):
                     for i in range(8):
                         if isMyFigureArea(state[i][j]):
                             current_position['y'] = i
@@ -882,14 +942,25 @@ def moveFigure():
                     else:
                         continue
                     break
+                else:
+                    for j in range(0, current_figure['x'] + 1):
+                        for i in range(8):
+                            if isMyFigureArea(state[i][j]):
+                                current_position['y'] = i
+                                current_position['x'] = j
+                                break
+                        else:
+                            continue
+                        break
+
         elif command == "a":
             for j in range(current_position['x'] - 1, -1, -1):
                 if isMyFigureArea(state[current_position['y']][j]):
                     current_position['x'] = j
                     break
             else:
-                # for i in range(current_position['y'] - 1, -1, -1):
-                for i in range(7, -1, -1):
+                for i in range(current_position['y'] - 1, -1, -1):
+                # for i in range(7, -1, -1):
                     for j in range(7, -1, -1):
                         if isMyFigureArea(state[i][j]):
                             current_position['y'] = i
@@ -898,14 +969,24 @@ def moveFigure():
                     else:
                         continue
                     break
+                else:
+                    for i in range(7, current_figure['y'], -1):
+                        for j in range(7, -1, -1):
+                            if isMyFigureArea(state[i][j]):
+                                current_position['y'] = i
+                                current_position['x'] = j
+                                break
+                        else:
+                            continue
+                        break
         elif command == "w":
             for i in range(current_position['y'] - 1, -1, -1):
                 if isMyFigureArea(state[i][current_position['x']]):
                     current_position['y'] = i
                     break
             else:
-                # for j in range(current_position['x'] - 1, -1, -1):
-                for j in range(7, -1, -1):
+                for j in range(current_position['x'] - 1, -1, -1):
+                # for j in range(7, -1, -1):
                     for i in range(7, -1, -1):
                         if isMyFigureArea(state[i][j]):
                             current_position['y'] = i
@@ -914,6 +995,16 @@ def moveFigure():
                     else:
                         continue
                     break
+                else:
+                    for j in range(7, current_figure['x'], -1):
+                        for i in range(7, -1, -1):
+                            if isMyFigureArea(state[i][j]):
+                                current_position['y'] = i
+                                current_position['x'] = j
+                                break
+                        else:
+                            continue
+                        break
         elif command == '':
             if current_figure == current_position:
                 # print("ret f")
@@ -982,6 +1073,21 @@ def move():
                 return (current_position['y'], current_position['x'])
         return False
 
+    # произошло ли взятие на проходе
+    def checkPawnCapturing():
+        nonlocal current
+        if pawnJump and ('P' in figure):
+            if 'b' in figure:
+                if pawnJump[1] ==current_position['x'] and  pawnJump[0]+1 == current_position['y']:
+                    state[current_position['y'] - 1][current_position['x']] = '0'
+                    current = 'wP'
+            else:
+                if pawnJump[1] ==current_position['x'] and  pawnJump[0]-1 == current_position['y']:
+                    state[current_position['y'] + 1][current_position['x']] = '0'
+                    current = 'bP'
+
+
+
     # новая позиция фигуры
     current = state[current_position['y']][current_position['x']]
     # прошлая позиция
@@ -993,21 +1099,26 @@ def move():
 
     # print("moved figure")
     # print(moved_figure)
-    # проверить сделала ли пешка ход на два шага вперёд, необходимо для проверки возможности взятия на проходе
-    pawnJump = isPawnJump()
 
+
+    checkPawnCapturing()
     print(current)
     # фигура бьёт другую
     if 'w' in current or 'b' in current:
         # print("WTF")
         # взятие на проходе
-        if current == '0':
-            playersCount[currentPlayer] += state[current_position['y'] + 1][current_position['x']]
-            state[current_position['y'] + 1][current_position['x']] = '0'
-        # другие случаи
-        else:
-            print("KILLED"+current+"!")
-            playersCount[currentPlayer] += current[-1]
+        # if current == '0':
+        #
+        #     if 'b' in current:
+        #         playersCount[currentPlayer] += state[current_position['y'] + 1][current_position['x']]
+        #         state[current_position['y'] + 1][current_position['x']] = '0'
+        #     else:
+        #         playersCount[currentPlayer] += state[current_position['y'] - 1][current_position['x']]
+        #         state[current_position['y'] - 1][current_position['x']] = '0'
+        # # другие случаи
+        # else:
+        # print("KILLED"+current+"!")
+        playersCount[currentPlayer] += current[-1]
 
     # пешка дошла до края доски
     if 'P' in figure:
@@ -1025,6 +1136,9 @@ def move():
     state[current_position['y']][current_position['x']] = figure
     state[current_figure['y']][current_figure['x']] = '0'
 
+    # проверить сделала ли пешка ход на два шага вперёд, необходимо для проверки возможности взятия на проходе
+    pawnJump = isPawnJump()
+
     # проверить привёл ли ход к шаху
     check = isCheck()
 
@@ -1032,7 +1146,10 @@ def move():
 def showWinner():
     # мат
     if check:
-        print(currentPlayer + " win!")
+        if currentPlayer == 'White':
+            print("Black win!")
+        else:
+            print("White win!")
     # пат
     else:
         print('draw')
