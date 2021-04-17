@@ -273,7 +273,7 @@ def inSafe(aim, move=None, guard=None):
         state[move[0]][move[1]] = figure
     if guard:
         y,x,guard_move = guard
-        print(guard)
+        # print(guard)
         # if currentPlayer == 'White':
         #     queen = 'wQ'
         # else:
@@ -300,42 +300,43 @@ def getPlayerByFigure(figure):
 
 # допустимые ходы, когда королю объявлен шах
 def figureMovesWithCheck(figurePosition=None):
-    if not check:
-        return figureMoves(figurePosition)
+    # if not check:
+    #     return figureMoves(figurePosition)
+    return figureMoves(figurePosition)
 
-    if figurePosition:
-        y, x = figurePosition
-    else:
-        y, x = current_figure['y'], current_figure['x']
-
-    current = state[y][x]
-    moves = []
-    kills = []
-    player = getPlayerByFigure(current)
-
-    temp_moves, temp_kills = figureMoves(figurePosition)
-    myKing = myKingPosition(player)
-
-    if 'K' in current:
-        for move in temp_moves:
-    #         if inSafe(myKing, move):
-            moves.append(move)
+    # if figurePosition:
+    #     y, x = figurePosition
+    # else:
+    #     y, x = current_figure['y'], current_figure['x']
     #
-        for kill in temp_kills:
-    #         if inSafe(myKing, kill):
-            kills.append(kill)
-    else:
-    # if not 'K' in current:
-        print("ELSE")
-        for move in temp_moves:
-            if inSafe(myKing, guard=(y, x , move)):
-                moves.append(move)
+    # current = state[y][x]
+    # moves = []
+    # kills = []
+    # player = getPlayerByFigure(current)
+    #
+    # temp_moves, temp_kills = figureMoves(figurePosition)
+    # myKing = myKingPosition(player)
 
-        for kill in temp_kills:
-            if inSafe(myKing, guard=(y, x ,kill)):
-                kills.append(kill)
+    # if 'K' in current:
+    #     for move in temp_moves:
+    # #         if inSafe(myKing, move):
+    #         moves.append(move)
+    # #
+    #     for kill in temp_kills:
+    # #         if inSafe(myKing, kill):
+    #         kills.append(kill)
+    # else:
+    # # if not 'K' in current:
+    #     print("ELSE")
+    #     for move in temp_moves:
+    #         if inSafe(myKing, guard=(y, x , move)):
+    #             moves.append(move)
+    #
+    #     for kill in temp_kills:
+    #         if inSafe(myKing, guard=(y, x ,kill)):
+    #             kills.append(kill)
 
-    return moves, kills
+    # return temp_moves, temp_kills
 
 
 # figurePosition y,x
@@ -350,6 +351,31 @@ def figureMoves(figurePosition=None, safe = True):
     moves = []
     kills = []
     player = getPlayerByFigure(current)
+
+    def getSafeMoves():
+        safe_moves = []
+        safe_kills = []
+        myKing = myKingPosition(player)
+        if 'K' in current:
+            for move in moves:
+                #         if inSafe(myKing, move):
+                safe_moves.append(move)
+            #
+            for kill in kills:
+                #         if inSafe(myKing, kill):
+                safe_kills.append(kill)
+        else:
+            # if not 'K' in current:
+            # print("ELSE")
+            for move in moves:
+                if inSafe(myKing, guard=(y, x, move)):
+                    safe_moves.append(move)
+
+            for kill in kills:
+                if inSafe(myKing, guard=(y, x, kill)):
+                    safe_kills.append(kill)
+
+        return safe_moves, safe_kills
 
     def checkCeilForAction(y, x):
         if isEmptyCeil(state[y][x]):
@@ -539,6 +565,8 @@ def figureMoves(figurePosition=None, safe = True):
     elif 'K' in current:
         getKingAction()
 
+    if safe:
+        return getSafeMoves()
     return moves, kills
 
 # отобразить возможные ходы и выбор хода (position)
@@ -968,14 +996,17 @@ def move():
     # проверить сделала ли пешка ход на два шага вперёд, необходимо для проверки возможности взятия на проходе
     pawnJump = isPawnJump()
 
+    print(current)
     # фигура бьёт другую
-    if 'k' in current:
+    if 'w' in current or 'b' in current:
+        # print("WTF")
         # взятие на проходе
-        if current == 'k':
+        if current == '0':
             playersCount[currentPlayer] += state[current_position['y'] + 1][current_position['x']]
             state[current_position['y'] + 1][current_position['x']] = '0'
         # другие случаи
         else:
+            print("KILLED"+current+"!")
             playersCount[currentPlayer] += current[-1]
 
     # пешка дошла до края доски
