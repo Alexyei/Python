@@ -141,38 +141,47 @@ def init():
              ['wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP'],
              ['wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR']]
 
-    # тест рокировки
-    state = [['bR', '0', '0', '0', 'bK', '0', '0', 'bR'],
-             ['bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP'],
-             ['0'] * 8, ['0'] * 8, ['0'] * 8, ['0'] * 8,
-             ['wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP'],
-             ['wR', '0', '0', '0', 'wK', '0', '0', 'wR']]
-
-    # тест рокировки перескок через биток поле
-    state = [['bR', '0', '0', '0', 'bK', '0', '0', 'bR'],
-             ['bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP'],
-             ['bQ','0','0','0','0','0','0','0'],
-             ['0'] * 8, ['0'] * 8, ['0'] * 8,
-             ['wP', 'wP', 'wP', 'wP', '0', 'wP', 'wP', 'wP'],
-             ['wR', '0', '0', '0', 'wK', '0', '0', 'wR']]
-
-    # тест рокировки шах
-    state = [['bR', '0', '0', '0', 'bK', '0', '0', 'bR'],
-             ['bP', 'bP', 'bP', 'bP', '0', 'bP', 'bP', 'bP'],
-             ['bP', '0', '0', '0', 'bQ', '0', '0', '0'],
-             ['0'] * 8, ['0'] * 8, ['0'] * 8,
-             ['wP', 'wP', 'wP', 'wP', '0', 'wP', 'wP', 'wP'],
-             ['wR', '0', '0', '0', 'wK', '0', 'wN', 'wR']]
+    # # пат тест
+    # state = [['0', '0', 'wQ', '0', '0', 'bB', 'bN', 'bR'],
+    #          ['0', '0', '0', '0', 'bP', '0', 'bP', 'bQ'],
+    #          ['0','0','0','0','0','bP','bK','bR'],
+    #          ['0', '0', '0', '0', '0', '0', '0', 'bP'],
+    #          ['0', '0', '0', '0', '0', '0', '0', 'wP'],
+    #         ['0','0','0','0','wP','0','0','0'],
+    #          ['wP', 'wP', 'wP', 'wP', '0', 'wP', 'wP', '0'],
+    #          ['wR', 'wN', 'wB', '0', 'wK', 'wB', 'wN', 'wR']]
+    # # тест рокировки
+    # state = [['bR', '0', '0', '0', 'bK', '0', '0', 'bR'],
+    #          ['bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP'],
+    #          ['0'] * 8, ['0'] * 8, ['0'] * 8, ['0'] * 8,
+    #          ['wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP'],
+    #          ['wR', '0', '0', '0', 'wK', '0', '0', 'wR']]
+    #
+    # # тест рокировки перескок через биток поле
+    # state = [['bR', '0', '0', '0', 'bK', '0', '0', 'bR'],
+    #          ['bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP'],
+    #          ['bQ','0','0','0','0','0','0','0'],
+    #          ['0'] * 8, ['0'] * 8, ['0'] * 8,
+    #          ['wP', 'wP', 'wP', 'wP', '0', 'wP', 'wP', 'wP'],
+    #          ['wR', '0', '0', '0', 'wK', '0', '0', 'wR']]
+    #
+    # # тест рокировки шах
+    # state = [['bR', '0', '0', '0', 'bK', '0', '0', 'bR'],
+    #          ['bP', 'bP', 'bP', 'bP', '0', 'bP', 'bP', 'bP'],
+    #          ['bP', '0', '0', '0', 'bQ', '0', '0', '0'],
+    #          ['0'] * 8, ['0'] * 8, ['0'] * 8,
+    #          ['wP', 'wP', 'wP', 'wP', '0', 'wP', 'wP', 'wP'],
+    #          ['wR', '0', '0', '0', 'wK', '0', 'wN', 'wR']]
 
     # print(' '.join(state[0][:]))
-    current_figure = {'y': 7, 'x': 4}
-    current_position = {'y': 7, 'x': 4}
+    current_figure = {'y': 6, 'x': 4}
+    current_position = {'y': 6, 'x': 4}
     moved_figure = set()
     currentPlayer = 'White'
     # currentForeColor = Fore.GREEN
     # currentBackColor = Back.GREEN
     playersCount = {'White': '', 'Black': '', }
-    check = True
+    check = False
 
 # test ok
 def gameover():
@@ -181,7 +190,7 @@ def gameover():
         moves, kills = figureMovesWithCheck(figure)
         if moves or kills:
             return False
-    print("GAMEOVER!")
+    # print("GAMEOVER!")
     return True
 
 # test ok
@@ -395,6 +404,7 @@ def figureMoves(figurePosition=None, safe = True):
                 moves.append((y + 1, x))
             # проверка возможности хода на две клетки вперёд
             if isFirstMove(y, x) and isEmptyCeil(
+                    state[y + 1][x]) and isEmptyCeil(
                     state[y + 2][x]):
                 moves.append((y + 2, x))
             # проверка возможности съесть фигуру справа от пешки
@@ -418,6 +428,7 @@ def figureMoves(figurePosition=None, safe = True):
                 moves.append((y - 1, x))
             # проверка возможности хода на две клетки вперёд
             if isFirstMove(y, x) and isEmptyCeil(
+                    state[y - 1][x]) and isEmptyCeil(
                     state[y - 2][x]):
                 moves.append((y - 2, x))
             # проверка возможности съесть фигуру справа от пешки
@@ -814,7 +825,7 @@ def selectFigure():
                         continue
                     break
                 else:
-                    for i in range(7, current_figure['y'], -1):
+                    for i in range(7, current_figure['y']-1, -1):
                         # print("AAAA")
                         for j in range(7, -1, -1):
                             if isMyFigure(state[i][j]):
@@ -846,7 +857,7 @@ def selectFigure():
                         continue
                     break
                 else:
-                    for j in range(7, current_figure['x'], -1):
+                    for j in range(7, current_figure['x']-1, -1):
                         # for j in range(7, -1, -1):
                         for i in range(7, -1, -1):
                             if isMyFigure(state[i][j]):
@@ -970,7 +981,7 @@ def moveFigure():
                         continue
                     break
                 else:
-                    for i in range(7, current_figure['y'], -1):
+                    for i in range(7, current_figure['y']-1, -1):
                         for j in range(7, -1, -1):
                             if isMyFigureArea(state[i][j]):
                                 current_position['y'] = i
@@ -996,7 +1007,7 @@ def moveFigure():
                         continue
                     break
                 else:
-                    for j in range(7, current_figure['x'], -1):
+                    for j in range(7, current_figure['x']-1, -1):
                         for i in range(7, -1, -1):
                             if isMyFigureArea(state[i][j]):
                                 current_position['y'] = i
