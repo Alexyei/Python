@@ -141,15 +141,38 @@ def init():
              ['wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP'],
              ['wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR']]
 
+    # тест рокировки
+    state = [['bR', '0', '0', '0', 'bK', '0', '0', 'bR'],
+             ['bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP'],
+             ['0'] * 8, ['0'] * 8, ['0'] * 8, ['0'] * 8,
+             ['wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP'],
+             ['wR', '0', '0', '0', 'wK', '0', '0', 'wR']]
+
+    # тест рокировки перескок через биток поле
+    state = [['bR', '0', '0', '0', 'bK', '0', '0', 'bR'],
+             ['bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP'],
+             ['bQ','0','0','0','0','0','0','0'],
+             ['0'] * 8, ['0'] * 8, ['0'] * 8,
+             ['wP', 'wP', 'wP', 'wP', '0', 'wP', 'wP', 'wP'],
+             ['wR', '0', '0', '0', 'wK', '0', '0', 'wR']]
+
+    # тест рокировки шах
+    state = [['bR', '0', '0', '0', 'bK', '0', '0', 'bR'],
+             ['bP', 'bP', 'bP', 'bP', '0', 'bP', 'bP', 'bP'],
+             ['bP', '0', '0', '0', 'bQ', '0', '0', '0'],
+             ['0'] * 8, ['0'] * 8, ['0'] * 8,
+             ['wP', 'wP', 'wP', 'wP', '0', 'wP', 'wP', 'wP'],
+             ['wR', '0', '0', '0', 'wK', '0', 'wN', 'wR']]
+
     # print(' '.join(state[0][:]))
-    current_figure = {'y': 6, 'x': 0}
-    current_position = {'y': 6, 'x': 0}
-    moved_figure = {}
+    current_figure = {'y': 7, 'x': 4}
+    current_position = {'y': 7, 'x': 4}
+    moved_figure = set()
     currentPlayer = 'White'
     # currentForeColor = Fore.GREEN
     # currentBackColor = Back.GREEN
     playersCount = {'White': '', 'Black': '', }
-    check = False
+    check = True
 
 # test ok
 def gameover():
@@ -158,6 +181,7 @@ def gameover():
         moves, kills = figureMovesWithCheck(figure)
         if moves or kills:
             return False
+    print("GAMEOVER!")
     return True
 
 # test ok
@@ -177,9 +201,9 @@ def isFirstMove(y, x):
 
 def isMyFigure(ceil, player=False):
     # print(player)
-    if (ceil == 'wN'):
-        print(player)
-        print(currentPlayer)
+    # if (ceil == 'wN'):
+    #     print(player)
+    #     print(currentPlayer)
     if not player:
         player = currentPlayer
     return (player == 'White' and 'w' in ceil) or (player == 'Black' and 'b' in ceil)
@@ -219,13 +243,21 @@ def gelAllMyFiguries():
 
 def whoCanKilled(aim):
     enemies = getAllEnemies(getPlayerByFigure(state[aim[0]][aim[1]]))
+    # if (aim == (4,0)):
+    #     print("ENEMY")
+    #     print(enemies)
     killers = []
     for enemy in enemies:
-        moves, kills = figureMoves(enemy)
+
+        moves, kills = figureMoves(enemy , safe=False)
+        # if (enemy == (3,1)):
+        #     print("KILLER")
+        #     print(moves, kills)
         for move in moves:
             if move == aim:
                 killers.append(enemy)
         for kill in kills:
+
             if kill == aim:
                 killers.append(enemy)
 
@@ -240,13 +272,18 @@ def inSafe(aim, move=None, guard=None):
         state[aim[0]][aim[1]] = '0'
         state[move[0]][move[1]] = figure
     if guard:
-        if currentPlayer == 'White':
-            queen = 'wQ'
-        else:
-            queen = 'bQ'
-        state[guard[0]][guard[1]] = queen
-
-    result = not whoCanKilled(aim)
+        y,x,guard_move = guard
+        print(guard)
+        # if currentPlayer == 'White':
+        #     queen = 'wQ'
+        # else:
+        #     queen = 'bQ'
+        state[guard_move[0]][guard_move[1]] = state[y][x]
+        state[y][x] = '0'
+    if move:
+        result = not whoCanKilled(move)
+    else:
+        result = not whoCanKilled(aim)
     state = saved_state
     # if move:
     #     state[aim[0]][aim[1]] = figure
@@ -281,26 +318,28 @@ def figureMovesWithCheck(figurePosition=None):
 
     if 'K' in current:
         for move in temp_moves:
-            if inSafe(myKing, move):
-                moves.append(move)
-
+    #         if inSafe(myKing, move):
+            moves.append(move)
+    #
         for kill in temp_kills:
-            if inSafe(myKing, kill):
-                kills.append(kill)
+    #         if inSafe(myKing, kill):
+            kills.append(kill)
     else:
+    # if not 'K' in current:
+        print("ELSE")
         for move in temp_moves:
-            if inSafe(myKing, guard=move):
+            if inSafe(myKing, guard=(y, x , move)):
                 moves.append(move)
 
         for kill in temp_kills:
-            if inSafe(myKing, guard=kill):
+            if inSafe(myKing, guard=(y, x ,kill)):
                 kills.append(kill)
 
     return moves, kills
 
 
 # figurePosition y,x
-def figureMoves(figurePosition=None):
+def figureMoves(figurePosition=None, safe = True):
     if figurePosition:
         y, x = figurePosition
     else:
@@ -337,14 +376,14 @@ def figureMoves(figurePosition=None):
                 kills.append((y + 1, x + 1))
             # проверка возможности съесть фигуру слева от пешки
             if x != 0 and isEnemy(state[y + 1][x - 1], player):
-                kills.append((y + 1, x + 1))
+                kills.append((y + 1, x - 1))
             # проверка возможности взятия на проходе
-            if pawnJump and pawnJump['y'] == y:
+            if pawnJump and pawnJump[0] == y:
                 # взятие на проходе справа
-                if pawnJump['x'] == x + 1:
+                if pawnJump[1] == x + 1:
                     kills.append((y + 1, x + 1))
                 # взятие на проходе слева
-                elif pawnJump['x'] == x - 1:
+                elif pawnJump[1] == x - 1:
                     kills.append((y + 1, x - 1))
 
         def getWhitePawnAction():
@@ -360,14 +399,14 @@ def figureMoves(figurePosition=None):
                 kills.append((y - 1, x + 1))
             # проверка возможности съесть фигуру слева от пешки
             if x != 0 and isEnemy(state[y - 1][x - 1], player):
-                kills.append((y - 1, x + 1))
+                kills.append((y - 1, x - 1))
             # проверка возможности взятия на проходе
-            if pawnJump and pawnJump['y'] == y:
+            if pawnJump and pawnJump[0] == y:
                 # взятие на проходе справа
-                if pawnJump['x'] == x + 1:
+                if pawnJump[1] == x + 1:
                     kills.append((y - 1, x + 1))
                 # взятие на проходе слева
-                elif pawnJump['x'] == x - 1:
+                elif pawnJump[1] == x - 1:
                     kills.append((y - 1, x - 1))
 
         if player == 'White':
@@ -440,13 +479,26 @@ def figureMoves(figurePosition=None):
         def checkCastling():
             def checkLongCastling():
                 if isFirstMove(y, x) and isFirstMove(y, 0):
-                    if isEmptyCeil((y, x - 1)) and isEmptyCeil((y, x - 2)) and isEmptyCeil((y, x - 3)):
+                    if isEmptyCeil(state[y][x-1]) and isEmptyCeil(state[y][x-2]) and isEmptyCeil(state[y][x-3]):
+                        if safe:
+                            if (not inSafe((y,x),(y,x-1))) or (not inSafe((y,x),(y,x-2))):
+                                return
                         # if inSafe((y, x), (y, x - 1)):
                         moves.append((y, x - 2))
             def checkShortCastling():
+                # print("check short")
                 if isFirstMove(y, x) and isFirstMove(y, 7):
-                    if isEmptyCeil((y,x+1)) and isEmptyCeil((y,x+2)):
+                    # print("1 short")
+                    # print(state[y][x+1])
+                    # print(state[y][x + 2])
+                    # print(isEmptyCeil((y,x+1)))
+                    # print(isEmptyCeil((y, x + 2)))
+                    if isEmptyCeil(state[y][x+1]) and isEmptyCeil(state[y][x+2]):
+                        # print("2 short")
                         # if inSafe((y,x),(y,x+1)):
+                        if safe:
+                            if not inSafe((y,x),(y,x+1)):
+                                return
                         moves.append((y, x+2))
 
             checkLongCastling()
@@ -454,10 +506,13 @@ def figureMoves(figurePosition=None):
 
         neighbors = find_neighbors(y, x)
         for move in neighbors:
-            # if inSafe((y, x), move):
+            if safe:
+                if not inSafe((y, x), move):
+                    continue
             checkCeilForAction(*move)
 
         # рокировку нельзя делать под шахом
+        #  and (player == currentPlayer)
         if not check:
             checkCastling()
         # if x != 7 and inSafe((y,x),(y,x+1)):
@@ -504,12 +559,12 @@ def getFullState(drawMoves=True, position=True):
 
         # текущая фигура
         if position:
-            print("cp")
+            # print("cp")
             fullState[current_figure['y']][current_figure['x']] = 'm'
             fullState[current_position['y']][current_position['x']] = 'c' + state[current_figure['y']][
                 current_figure['x']]
         else:
-            print("cf")
+            # print("cf")
             fullState[current_figure['y']][current_figure['x']] = 'c' + fullState[current_figure['y']][
                 current_figure['x']]
 
@@ -518,6 +573,7 @@ def getFullState(drawMoves=True, position=True):
         for figure in myFiguries:
             if whoCanKilled(figure):
                 y, x = figure
+                # print("AIM"+str(figure))
                 fullState[y][x] = 'a' + fullState[y][x]
 
         # return [['bR', 'bN', 'bB', 'bQ', 'sbK', 'bB', 'bN', 'kbR'],
@@ -525,10 +581,10 @@ def getFullState(drawMoves=True, position=True):
         #         ['0'] * 8, ['m'] * 8, ['0'] * 8, ['0'] * 8,
         #         ['wP', 'wP', 'wP', 'wP', 'kwP', 'wP', 'wP', 'wP'],
         #         ['wR', 'wN', 'kwB', 'wQ', 'swK', 'cwB', 'wN', 'wR']]
-        print("fig")
-        print(current_figure)
-        print("pos")
-        print(current_position)
+        # print("fig")
+        # print(current_figure)
+        # print("pos")
+        # print(current_position)
         # print(fullState)
         return fullState
 
@@ -558,7 +614,7 @@ def getTableContent(drawMoves=True, position=True):
         elif cell == 'k0':
             return Back.RED + '    ' + Back.RESET
         # возможный ход
-        elif cell == 'm':
+        elif 'm' in cell:
             return currentBackColor + '    ' + Back.RESET
         # фигуры под боем
         # 1:3 cswK acwN
@@ -566,7 +622,7 @@ def getTableContent(drawMoves=True, position=True):
             return Back.RED + ' ' + Fore.BLACK + cell[-2:] + defaultForeColor + ' ' + Back.RESET
         # текущая фигура
         elif cell.startswith('c'):
-            print(cell[-2:])
+            # print(cell[-2:])
             return currentBackColor + ' ' + Fore.BLACK + cell[-2:] + defaultForeColor + ' ' + Back.RESET
         # шах
         elif cell.startswith('a') and 'K' in cell:
@@ -579,6 +635,8 @@ def getTableContent(drawMoves=True, position=True):
             return ' ' + currentForeColor + cell + defaultForeColor + ' '
 
     fullState = getFullState(drawMoves, position)
+    # print("FULLSTATE")
+    # print(fullState)
     tableContent = [[getCellStyle(fullState[i][j]) for j in range(8)] for i in range(8)]
 
     return tableContent
@@ -627,22 +685,23 @@ def showPlayerCount():
 #     return moves or kills
 
 def canMove(figurePosition=None):
-    moves, kills = figureMoves(figurePosition)
-    print(moves, kills)
+
+    moves, kills = figureMovesWithCheck(figurePosition)
+    # print(moves, kills)
     return moves or kills
 
 
 # выбор своей фигуры для хода
 # возможно следует добавить метод canMove() для проверки есть ли у фигуры ходы if myFigure(state[i][j]) and canMove(state[i][j])
 def selectFigure():
-    print("select f")
+    # print("select f")
     # print(currentPlayer)
     while True:
         # print(currentPlayer)
         # print(state)
         command = input()
         if command == "d":
-            print("d"+currentPlayer)
+            # print("d"+currentPlayer)
             for j in range(current_figure['x'] + 1, 8):
                 if isMyFigure(state[current_figure['y']][j]):
                     current_figure['x'] = j
@@ -691,9 +750,9 @@ def selectFigure():
                 for i in range(7, -1, -1):
                 # for i in range(current_figure['y'] - 1, -1, -1):
                     for j in range(7, -1, -1):
-                        print(str(i) + str(j))
+                        # print(str(i) + str(j))
                         if isMyFigure(state[i][j]):
-                            print("TTT"+state[i][j])
+                            # print("TTT"+state[i][j])
                             current_figure['y'] = i
                             current_figure['x'] = j
                             if canMove():
@@ -702,8 +761,7 @@ def selectFigure():
                         continue
                     break
         elif command == "w":
-            # if marker['x'] != 0 and state[marker['x'] - 1][marker['y']] == 's':
-            #     marker['x'] -= 1
+
             for i in range(current_figure['y'] - 1, -1, -1):
                 if isMyFigure(state[i][current_figure['x']]):
                     current_figure['y'] = i
@@ -730,18 +788,19 @@ def selectFigure():
 
 
 def isMyFigureArea(ceil):
-    print(ceil)
-    return (ceil == 'm') or ('k' in ceil)
+    # print(ceil)
+    return ('m' in ceil) or ('k' in ceil)
 
 
 def moveFigure():
-    print("move f")
+    # print("move f")
     def nextPlayer():
         global currentPlayer
         if currentPlayer == 'White':
             currentPlayer = 'Black'
         else:
             currentPlayer = 'White'
+        # print("new Current player:"+currentPlayer)
 
     def newMarker():
         for i in range(8):
@@ -749,7 +808,8 @@ def moveFigure():
                 if isMyFigure(state[i][j]):
                     current_figure['y'] = current_position['y'] = i
                     current_figure['x'] = current_position['x'] = j
-                    return
+                    if canMove():
+                        return
 
     # синхронизация (так как в select figure меняется только current_figure)
     current_position['y'] = current_figure['y']
@@ -757,12 +817,9 @@ def moveFigure():
 
     while True:
         state = getFullState(True, True)
-        print(state)
+        # print(state)
         command = input()
         if command == "d":
-            # if marker['y'] != 4 and state[marker['x']][marker['y'] + 1] == 's':
-            #     marker['y'] += 1
-            # if marker['x'] != 4:
             for j in range(current_position['x'] + 1, 8):
                 if isMyFigureArea(state[current_position['y']][j]):
                     current_position['x'] = j
@@ -779,14 +836,11 @@ def moveFigure():
                         continue
                     break
         elif command == "s":
-            # if marker['x'] != 3 and state[marker['x'] + 1][marker['y']] == 's':
-            #     marker['x'] += 1
-            print("press s")
-            print(state)
+            # print(state)
             for i in range(current_position['y'] + 1, 8):
-                print("fl do it" + str(i))
+                # print("fl do it" + str(i))
                 if isMyFigureArea(state[i][current_position['x']]):
-                    print("do it"+str(i))
+                    # print("do it"+str(i))
                     current_position['y'] = i
                     break
             else:
@@ -801,8 +855,6 @@ def moveFigure():
                         continue
                     break
         elif command == "a":
-            # if marker['y'] != 0 and state[marker['x']][marker['y'] - 1] == 's':
-            #     marker['y'] -= 1
             for j in range(current_position['x'] - 1, -1, -1):
                 if isMyFigureArea(state[current_position['y']][j]):
                     current_position['x'] = j
@@ -819,8 +871,6 @@ def moveFigure():
                         continue
                     break
         elif command == "w":
-            # if marker['x'] != 0 and state[marker['x'] - 1][marker['y']] == 's':
-            #     marker['x'] -= 1
             for i in range(current_position['y'] - 1, -1, -1):
                 if isMyFigureArea(state[i][current_position['x']]):
                     current_position['y'] = i
@@ -838,7 +888,7 @@ def moveFigure():
                     break
         elif command == '':
             if current_figure == current_position:
-                print("ret f")
+                # print("ret f")
                 return True
 
             move()
@@ -850,7 +900,7 @@ def moveFigure():
         showPlayerCount()
     nextPlayer()
     newMarker()
-    return False
+    return True
 
 
 def transformPawn():
@@ -900,6 +950,7 @@ def move():
         # если пешка
         if 'P' in figure:
             if (current_position['y'] - current_figure['y'] == 2) or (current_figure['y'] - current_position['y'] == 2):
+                # print("PAWN JUMP!")
                 return (current_position['y'], current_position['x'])
         return False
 
@@ -909,8 +960,11 @@ def move():
     figure = state[current_figure['y']][current_figure['x']]
 
     # отмечаем, что фигура сделала ход, это нужно для рокировки, или хода на две клетки вперёд у пешки, взятие на проходе
-    moved_figure.add((current_figure['y'], current_figure['x']))
+    # moved_figure.add((current_figure['y'], current_figure['x']))
+    moved_figure.add((current_position['y'], current_position['x']))
 
+    # print("moved figure")
+    # print(moved_figure)
     # проверить сделала ли пешка ход на два шага вперёд, необходимо для проверки возможности взятия на проходе
     pawnJump = isPawnJump()
 
@@ -960,12 +1014,13 @@ def game():
             init()
 
             while not gameover():
-                draw(getTableContent())
+                draw(getTableContent(position=False))
                 showPlayerCount()
                 selectFigure()
-                while not moveFigure():
-                    pass
-                print(state)
+                # while not moveFigure():
+                #     pass
+                moveFigure()
+                # print(state)
 
             # move()
             # state[marker['x']][marker['y']] = currentPlayer
