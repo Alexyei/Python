@@ -22,9 +22,19 @@ class Pawn(Figure):
 
         # проверка пешка дошла до края доски превращение в другую фигуру
         if (self.player == 'White' and self.y == 0) or (self.player == 'Black' and self.y ==  height -1):
-            self.transform()
+            return {"status": 'transform', "data": self.transform()}
 
         return {"status": 'success'}
 
     def transform(self):
-        pass
+        while True:
+            print("Замена пешки, выберите одну из фигур: q,r,n,b")
+            figure = input()
+            if figure in "qQ":
+                return "Queen"
+            elif figure in "nN":
+                return "Knight"
+            elif figure in "bB":
+                return "Bishop"
+            elif figure in "rR":
+                return "Rock"

@@ -1,4 +1,10 @@
 import copy
+from figures.Bishop import Bishop
+from figures.Queen import Queen
+from figures.Knight import Knight
+from figures.Rock import Rock
+from figures.King import King
+from figures.Pawn import Pawn
 
 class Controller:
     def __init__(self, board):
@@ -65,19 +71,30 @@ class Controller:
                     self.board.state[y + 2][x]):
                     moves.append((y + 2, x))
                 # проверка возможности съесть фигуру справа от пешки
-                if x != 7 and self.board.isEnemy(self.board.state[y + 1][x + 1], player):
+                if x != self.board.width -1  and self.board.isEnemy(self.board.state[y + 1][x + 1], player):
                     kills.append((y + 1, x + 1))
                 # проверка возможности съесть фигуру слева от пешки
                 if x != 0 and self.board.isEnemy(self.board.state[y + 1][x - 1], player):
                     kills.append((y + 1, x - 1))
+                # # проверка возможности взятия на проходе
+                # if pawnJump and pawnJump[0] == y:
+                #     # взятие на проходе справа
+                #     if pawnJump[1] == x + 1:
+                #         kills.append((y + 1, x + 1))
+                #     # взятие на проходе слева
+                #     elif pawnJump[1] == x - 1:
+                #         kills.append((y + 1, x - 1))
+
                 # проверка возможности взятия на проходе
-                if pawnJump and pawnJump[0] == y:
+                if type(self.lastFigureMoved) == Pawn and self.lastFigureMoved.jumped and y == self.lastFigureMoved.y:
                     # взятие на проходе справа
-                    if pawnJump[1] == x + 1:
+                    if self.lastFigureMoved.x == x + 1:
                         kills.append((y + 1, x + 1))
                     # взятие на проходе слева
-                    elif pawnJump[1] == x - 1:
+                    elif self.lastFigureMoved.x == x - 1:
                         kills.append((y + 1, x - 1))
+
+
 
             def getWhitePawnAction():
                 # проверка возможности хода на одну клетку вперёд
@@ -94,13 +111,22 @@ class Controller:
                 # проверка возможности съесть фигуру слева от пешки
                 if x != 0 and self.board.isEnemy(self.board.state[y - 1][x - 1], player):
                     kills.append((y - 1, x - 1))
+                # # проверка возможности взятия на проходе
+                # if pawnJump and pawnJump[0] == y:
+                #     # взятие на проходе справа
+                #     if pawnJump[1] == x + 1:
+                #         kills.append((y - 1, x + 1))
+                #     # взятие на проходе слева
+                #     elif pawnJump[1] == x - 1:
+                #         kills.append((y - 1, x - 1))
+
                 # проверка возможности взятия на проходе
-                if pawnJump and pawnJump[0] == y:
+                if type(self.lastFigureMoved) == Pawn and self.lastFigureMoved.jumped and y == self.lastFigureMoved.y:
                     # взятие на проходе справа
-                    if pawnJump[1] == x + 1:
+                    if self.lastFigureMoved.x == x + 1:
                         kills.append((y - 1, x + 1))
                     # взятие на проходе слева
-                    elif pawnJump[1] == x - 1:
+                    elif self.lastFigureMoved.x == x - 1:
                         kills.append((y - 1, x - 1))
 
             if player == 'White':
@@ -259,7 +285,7 @@ class Controller:
         return result
 
     def move(self, figure, position, killed=[]):
-        figureClasses = {'King': King, 'Pawn': Pawn}
+        figureClasses = {'Queen': Queen, 'Knight': Knight, 'Bishop': Bishop, 'Rock': Rock}
         y,x = position
         if self.board.isFigure(self.board.state[y][x]):
             killed.append(self.board.state[y][x])
@@ -267,15 +293,21 @@ class Controller:
         self.lastFigureMoved = figure
 
         if result["status"] == 'move':
-            figure = self.board.state[result["data"]["figure_y"]][result["data"]["figure_x"]]
+            figure = self.board.state[result["data"]["figure"][0]][result["data"]["figure"][1]]
             position = result["data"]["position"]
             self.move(figure, position, killed)
         elif result["status"] == 'transform':
-            self.board.state[figure.y][figure.x] = figureClasses[result["data"]["figureClass"]](figure.getPosition(),figure.player)
+            self.board.state[figure.y][figure.x] = figureClasses[result["data"]](figure.getPosition(),figure.player)
         elif result["status"] == 'kill':
-            killed.append(self.board.state[result["data"]["figure_y"]][result["data"]["figure_x"]])
-            self.board.state[result["data"]["figure_y"]][result["data"]["figure_x"]] = '0'
+            killed.append(self.board.state[result["data"][0]][result["data"][1]])
+            self.board.state[result["data"][0]][result["data"][1]] = '0'
 
         return killed
+
+    def canMove(self, figurePosition=None):
+        # moves, kills = figureMovesWithCheck(figurePosition)
+        moves, kills = self.figureMoves(figurePosition)
+        # print(moves, kills)
+        return moves or kills
 
 
