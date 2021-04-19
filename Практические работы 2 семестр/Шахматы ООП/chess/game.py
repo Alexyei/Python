@@ -40,6 +40,12 @@ class Game:
         print("Что-бы запустить игру -нажмите Enter".center(shutil.get_terminal_size().columns))
         input()
 
+    def getMyEnemy(self):
+        if self.currentPlayer == 'White':
+            return 'Black'
+        else:
+            return 'White'
+
     def gameover(self):
         pass
 
