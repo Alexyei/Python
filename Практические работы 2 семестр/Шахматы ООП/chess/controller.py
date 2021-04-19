@@ -258,18 +258,24 @@ class Controller:
 
         return result
 
-    def move(self, figure, position):
+    def move(self, figure, position, killed=[]):
         figureClasses = {'King': King, 'Pawn': Pawn}
-        result = figure.move(position, self.lastFigureMoved)
+        y,x = position
+        if self.board.isFigure(self.board.state[y][x]):
+            killed.append(self.board.state[y][x])
+        result = figure.move(position, self.lastFigureMoved, (self.board.getSize()))
         self.lastFigureMoved = figure
 
         if result["status"] == 'move':
             figure = self.board.state[result["data"]["figure_y"]][result["data"]["figure_x"]]
             position = result["data"]["position"]
-            self.move(figure, position)
+            self.move(figure, position, killed)
         elif result["status"] == 'transform':
             self.board.state[figure.y][figure.x] = figureClasses[result["data"]["figureClass"]](figure.getPosition(),figure.player)
         elif result["status"] == 'kill':
+            killed.append(self.board.state[result["data"]["figure_y"]][result["data"]["figure_x"]])
             self.board.state[result["data"]["figure_y"]][result["data"]["figure_x"]] = '0'
+
+        return killed
 
 

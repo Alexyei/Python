@@ -10,7 +10,7 @@ class Figure:
     def getPosition(self):
         return self.y, self.x
 
-    def move(self, position, lastMovedFigure = None):
+    def move(self, position, lastMovedFigure = None, boardSize = None):
         y, x = position
         self.y = y
         self.x = x

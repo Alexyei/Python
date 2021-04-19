@@ -132,3 +132,6 @@ class Board:
 
     def isFirstMove(self, y, x):
         return not ((y, x) in self.moved_figure)
+
+    def getSize(self):
+        return self.height, self.width
