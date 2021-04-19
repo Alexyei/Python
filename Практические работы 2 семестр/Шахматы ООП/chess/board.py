@@ -1,5 +1,11 @@
-from controller import Controller
-from figure import Figure
+from chess.controller import Controller
+from chess.figure import Figure
+from chess.figures.Bishop import Bishop
+from chess.figures.Queen import Queen
+from chess.figures.Knight import Knight
+from chess.figures.Rock import Rock
+from chess.figures.King import King
+from chess.figures.Pawn import Pawn
 import copy
 
 class Board:
@@ -20,15 +26,43 @@ class Board:
         self.controller = Controller(self)
 
     def create_state(self):
-        self.state = [[], []]
+        # self.state = [[], []]
+        # заполняем доску пустыми ячейками
+        self.state = [['0' for j in range(self.width)] for i in range(self.height)]
+
+        # чёрные фигуры
+        self.state[0][0] = Rock((0,0),'Black')
+        self.state[0][7] = Rock((0, 7), 'Black')
+        self.state[0][1] = Knight((0, 1), 'Black')
+        self.state[0][6] = Knight((0, 6), 'Black')
+        self.state[0][2] = Bishop((0, 2), 'Black')
+        self.state[0][5] = Bishop((0, 5), 'Black')
+        self.state[0][3] = Queen((0, 3), 'Black')
+        self.state[0][4] = King((0, 4), 'Black')
+        for j in range(self.width):
+            self.state[1][j] = Pawn((1,j),'Black')
+
+        # белые фигуры
+        self.state[7][0] = Rock((7, 0), 'White')
+        self.state[7][7] = Rock((7, 7), 'White')
+        self.state[7][1] = Knight((7, 1), 'White')
+        self.state[7][6] = Knight((7, 6), 'White')
+        self.state[7][2] = Bishop((7, 2), 'White')
+        self.state[7][5] = Bishop((7, 5), 'White')
+        self.state[7][3] = Queen((7, 3), 'White')
+        self.state[7][4] = King((7, 4), 'White')
+        for j in range(self.width):
+            self.state[6][j] = Pawn((6, j), 'White')
+
 
     # отобразить возможные ходы и выбор хода (position)
-    def getFullState(self, moves=True, position=True):
+    def getFullState(self, player, moves=True, position=True):
         # показать текущие ходы, position = TRUE показать перемещение фигуры (при выборе хода)
         def getStateWithMoves():
 
             moves, kills = self.controller.figureMoves()
-            fullState = copy.deepcopy(self.state)
+            # fullState = copy.deepcopy(self.state)
+            fullState = [[str(el) for el in row] for row in self.state]
             for y, x in moves:
                 fullState[y][x] = 'm'
             for y, x in kills:
@@ -38,16 +72,16 @@ class Board:
             # текущая фигура
             if position:
                 # print("cp")
-                fullState[self.current_figure['y']][self.current_figure['x']] = 'm'
-                fullState[self.current_position['y']][self.current_position['x']] = 'c' + str(self.state[self.current_figure['y']][
-                    self.current_figure['x']])
+                fullState[self.current_figure.y][self.current_figure.x] = 'm'
+                fullState[self.current_position['y']][self.current_position['x']] = 'c' + str(self.state[self.current_figure.y][
+                    self.current_figure.x])
             else:
                 # print("cf")
-                fullState[self.current_figure['y']][self.current_figure['x']] = 'c' + str(fullState[self.current_figure['y']][
-                    self.current_figure['x']])
+                fullState[self.current_figure.y][self.current_figure.x] = 'c' + str(fullState[self.current_figure.y][
+                    self.current_figure.x])
 
             # мои фигуры находящиеся под боем
-            myFiguries = self.gelAllMyFiguries()
+            myFiguries = self.gelAllMyFiguries(player)
             for figure in myFiguries:
                 if self.whoCanKilled(figure):
                     y, x = figure
@@ -77,7 +111,7 @@ class Board:
         killers = []
         for enemy in enemies:
 
-            moves, kills = self.controller.figureMoves(enemy, safe=False)
+            moves, kills = self.controller.figureMoves(enemy.getPosition(), safe=False)
             # if (enemy == (3,1)):
             #     print("KILLER")
             #     print(moves, kills)
@@ -135,3 +169,7 @@ class Board:
 
     def getSize(self):
         return self.height, self.width
+
+    def isCheck(self, player):
+        king = self.getMyKing(player)
+        self.check =self.whoCanKilled(king)

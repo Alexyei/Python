@@ -17,4 +17,4 @@ class Figure:
         return {"status": 'success'}
 
     def __str__(self):
-        return self.player[0].lover()+self.name
+        return self.player[0].lower()+self.name

@@ -100,7 +100,7 @@ check = False
 # пешка сделал ход на две клетки вперёд, возможно взятие на проходе
 pawnJump = False
 
-
+# +
 def init():
     global state
     global marker
@@ -161,7 +161,7 @@ def init():
     playersCount = {'White': '', 'Black': '', }
     check = False
 
-
+# +
 # test ok
 def gameover():
     myFiguries = gelAllMyFiguries()
@@ -173,24 +173,24 @@ def gameover():
     # print("GAMEOVER!")
     return True
 
-
+# +
 # test ok
 def isEnemy(ceil, player=False):
     if not player:
         player = currentPlayer
     return (player == 'White' and 'b' in ceil) or (player == 'Black' and 'w' in ceil)
 
-
+# +
 # test ok
 def isEmptyCeil(ceil):
     return ceil == '0'
 
-
+# +
 # test ok
 def isFirstMove(y, x):
     return not ((y, x) in moved_figure)
 
-
+# +
 def isMyFigure(ceil, player=False):
     # print(player)
     # if (ceil == 'wN'):
@@ -200,14 +200,14 @@ def isMyFigure(ceil, player=False):
         player = currentPlayer
     return (player == 'White' and 'w' in ceil) or (player == 'Black' and 'b' in ceil)
 
-
+# +
 def getMyEnemy():
     if currentPlayer == 'White':
         return 'Black'
     else:
         return 'White'
 
-
+# +
 def myKingPosition(player=False):
     if not player:
         player = currentPlayer
@@ -216,7 +216,7 @@ def myKingPosition(player=False):
             if 'K' in state[y][x] and isMyFigure(state[y][x], player):
                 return y, x
 
-
+# +
 # test ok
 def getAllEnemies(player=False):
     if not player:
@@ -229,12 +229,12 @@ def getAllEnemies(player=False):
 
     return enemies
 
-
+# +
 # test ok
 def gelAllMyFiguries():
     return getAllEnemies(getMyEnemy())
 
-
+# +
 def whoCanKilled(aim):
     enemies = getAllEnemies(getPlayerByFigure(state[aim[0]][aim[1]]))
     # if (aim == (4,0)):
@@ -257,7 +257,7 @@ def whoCanKilled(aim):
 
     return killers
 
-
+# +
 def inSafe(aim, move=None, guard=None):
     global state
     saved_state = copy.deepcopy(state)
@@ -285,7 +285,7 @@ def inSafe(aim, move=None, guard=None):
 
     return result
 
-
+# +
 # test ok
 def getPlayerByFigure(figure):
     if 'w' in figure:
@@ -335,6 +335,7 @@ def getPlayerByFigure(figure):
 
 
 # figurePosition y,x
+# +
 def figureMoves(figurePosition=None, safe=True):
     if figurePosition:
         y, x = figurePosition
@@ -566,7 +567,7 @@ def figureMoves(figurePosition=None, safe=True):
         return getSafeMoves()
     return moves, kills
 
-
+# +
 # отобразить возможные ходы и выбор хода (position)
 def getFullState(drawMoves=True, position=True):
     # if not (drawMoves or moveMode):
@@ -619,7 +620,7 @@ def getFullState(drawMoves=True, position=True):
         return getStateWithMoves()
     return state
 
-
+# +
 def getTableContent(drawMoves=True, position=True):
     def getCellStyle(cell):
         def getCurrentColor():
@@ -668,7 +669,7 @@ def getTableContent(drawMoves=True, position=True):
 
     return tableContent
 
-
+# +
 def draw(tableContent):
     # print(tableContent)
     def getRow(row):
@@ -701,24 +702,19 @@ def draw(tableContent):
     # print('1')
     print(table)
 
-
+# +
 # test ok
 def showPlayerCount():
     print(f"\t{Fore.BLUE}White: {playersCount['White']}\n\t{Fore.GREEN}Black: {playersCount['Black']}{Fore.RESET}")
 
-
-#
-# def canMove():
-#     moves, kills = figureMoves()
-#     return moves or kills
-
+# +
 def canMove(figurePosition=None):
     # moves, kills = figureMovesWithCheck(figurePosition)
     moves, kills = figureMoves(figurePosition)
     # print(moves, kills)
     return moves or kills
 
-
+# +
 # выбор своей фигуры для хода
 # возможно следует добавить метод canMove() для проверки есть ли у фигуры ходы if myFigure(state[i][j]) and canMove(state[i][j])
 def selectFigure():
@@ -864,12 +860,12 @@ def selectFigure():
         draw(getTableContent(position=False))
         showPlayerCount()
 
-
+# +
 def isMyFigureArea(ceil):
     # print(ceil)
     return ('m' in ceil) or ('k' in ceil)
 
-
+# +
 def moveFigure():
     # print("move f")
     def nextPlayer():
@@ -1021,7 +1017,7 @@ def moveFigure():
     newMarker()
     return True
 
-
+# +
 def transformPawn():
     while True:
         print("Замена пешки, выберите одну из фигур: q,r,n,b")
@@ -1032,11 +1028,7 @@ def transformPawn():
             else:
                 return 'b' + figure.upper()
 
-
-# def IsCheck():
-#     return False
-
-
+# +
 # рокировка (передвигаем ладью), король движется в методе move
 def castling(short=True):
     if currentPlayer == 'White':
@@ -1058,12 +1050,12 @@ def castling(short=True):
             state[0][3] = state[0][0]
             state[0][0] = '0'
 
-
+# +
 def isCheck():
     king = myKingPosition(getMyEnemy())
     return whoCanKilled(king)
 
-
+# +
 # приватный метод
 def move():
     global check
@@ -1143,7 +1135,7 @@ def move():
     # проверить привёл ли ход к шаху
     check = isCheck()
 
-
+# +
 def showWinner():
     # мат
     if check:
@@ -1155,7 +1147,7 @@ def showWinner():
     else:
         print('draw')
 
-
+# +
 def game():
     try:
         showRules()

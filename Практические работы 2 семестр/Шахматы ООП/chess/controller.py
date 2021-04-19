@@ -1,10 +1,10 @@
 import copy
-from figures.Bishop import Bishop
-from figures.Queen import Queen
-from figures.Knight import Knight
-from figures.Rock import Rock
-from figures.King import King
-from figures.Pawn import Pawn
+from chess.figures.Bishop import Bishop
+from chess.figures.Queen import Queen
+from chess.figures.Knight import Knight
+from chess.figures.Rock import Rock
+from chess.figures.King import King
+from chess.figures.Pawn import Pawn
 
 class Controller:
     def __init__(self, board):
@@ -15,7 +15,7 @@ class Controller:
         if figurePosition:
             y, x = figurePosition
         else:
-            y, x = self.board.current_figure['y'], self.board.current_figure['x']
+            y, x = self.board.current_figure.y, self.board.current_figure.x
 
         current = self.board.state[y][x]
         moves = []

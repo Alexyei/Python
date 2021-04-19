@@ -4,8 +4,8 @@ import os
 from colorama import Fore
 from colorama import Back
 
-from board import Board
-from constants import DEFAULTBackColor,DEFAULTForeColor
+from chess.board import Board
+from chess.constants import DEFAULTBackColor,DEFAULTForeColor
 
 class Game:
     def __init__(self):
@@ -47,7 +47,14 @@ class Game:
             return 'White'
 
     def gameover(self):
-        pass
+        myFiguries = self.board.gelAllMyFiguries(self.currentPlayer)
+        for figure in myFiguries:
+            # moves, kills = figureMovesWithCheck(figure)
+            moves, kills = self.board.controller.figureMoves(figure.getPosition())
+            if moves or kills:
+                return False
+        # print("GAMEOVER!")
+        return True
 
     def render(self, moves = True, position = True):
 
@@ -59,9 +66,9 @@ class Game:
                 result += tableContent[row][j] + "║"
             return result
 
+
         table = f'''{DEFAULTForeColor}
-        \t   A    B    C    D    E    F    G    H
-        \t╔════╦════╦════╦════╦════╦════╦════╦════╗'''
+        \n\t   A    B    C    D    E    F    G    H\n\t╔════╦════╦════╦════╦════╦════╦════╦════╗'''
         for i in range(8):
             table += getRow(i) + ' ' + str(8 - i)
             if i < 7:
@@ -70,16 +77,312 @@ class Game:
                 table += f'''\n\t╚════╩════╩════╩════╩════╩════╩════╩════╝{Fore.WHITE}'''
 
         os.system("cls")
+        # print()
         print(table)
 
     def showPlayerCount(self):
         print(f"\t{Fore.BLUE}White: {self.playersCount['White']}\n\t{Fore.GREEN}Black: {self.playersCount['Black']}{Fore.RESET}")
 
     def selectFigure(self):
-        pass
+        while True:
+            command = input()
+            if command == "d":
+                for j in range(self.board.current_figure.x + 1, self.board.width):
+                    if self.board.isMyFigure(self.board.state[self.board.current_figure.y][j], self.currentPlayer):
+                        self.board.current_figure = self.board.state[self.board.current_figure.y][j]
+                        # current_figure['x'] = j
+                        if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                            break
+                else:
+                    # for i in range(8):
+                    for i in range(self.board.current_figure.y + 1, self.board.height):
+                        for j in range(self.board.width):
+
+                            if self.board.isMyFigure(self.board.state[i][j], self.currentPlayer):
+                                # current_figure['y'] = i
+                                # current_figure['x'] = j
+                                self.board.current_figure = self.board.state[i][j]
+                                # if canMove():
+                                #     break
+                                if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                                    break
+                        else:
+                            continue
+                        break
+                    else:
+                        for i in range(0, self.board.current_figure.y + 1):
+                            for j in range(self.board.width):
+
+                                if self.board.isMyFigure(self.board.state[i][j], self.currentPlayer):
+                                    # current_figure['y'] = i
+                                    # current_figure['x'] = j
+                                    self.board.current_figure = self.board.state[i][j]
+                                    # if canMove():
+                                    #     break
+                                    if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                                        break
+                            else:
+                                continue
+                            break
+            elif command == "s":
+                for i in range(self.board.current_figure.y + 1, self.board.height):
+                    if self.board.isMyFigure(self.board.state[i][self.board.current_figure.x], self.currentPlayer):
+                        # current_figure['y'] = i
+                        self.board.current_figure = self.board.state[i][self.board.current_figure.x]
+                        # if canMove():
+                        if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                            break
+                else:
+                    for j in range(self.board.current_figure.x + 1, self.board.width):
+                        # for j in range(8):
+                        for i in range(self.board.height):
+                            if self.board.isMyFigure(self.board.state[i][j], self.currentPlayer):
+                                self.board.current_figure = self.board.state[i][j]
+                                if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                                    break
+                        else:
+                            continue
+                        break
+                    else:
+
+                        for j in range(0, self.board.current_figure.x + 1):
+                            # for j in range(8):
+                            for i in range(self.board.height):
+                                if self.board.isMyFigure(self.board.state[i][j], self.currentPlayer):
+                                    self.board.current_figure = self.board.state[i][j]
+                                    if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                                        break
+                            else:
+                                continue
+                            break
+            elif command == "a":
+                for j in range(self.board.current_figure.x - 1, -1, -1):
+                    if self.board.isMyFigure(self.board.state[self.board.current_figure.y][j], self.currentPlayer):
+                        # current_figure['x'] = j
+                        self.board.current_figure = self.board.state[self.board.current_figure.y][j]
+                        if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                            break
+                else:
+                    # for i in range(7, -1, -1):
+                    for i in range(self.board.current_figure.y - 1, -1, -1):
+                        for j in range(self.board.width-1, -1, -1):
+                            if self.board.isMyFigure(self.board.state[i][j], self.currentPlayer):
+                                self.board.current_figure = self.board.state[i][j]
+                                if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                                    break
+                        else:
+                            continue
+                        break
+                    else:
+                        for i in range(self.board.height-1, self.board.current_figure.y - 1, -1):
+                            # print("AAAA")
+                            for j in range(self.board.width-1, -1, -1):
+                                if self.board.isMyFigure(self.board.state[i][j], self.currentPlayer):
+                                    self.board.current_figure = self.board.state[i][j]
+                                    if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                                        break
+                            else:
+                                continue
+                            break
+            elif command == "w":
+                # print("START"+ str(self.board.current_figure.getPosition()))
+                for i in range(self.board.current_figure.y - 1, -1, -1):
+                    if self.board.isMyFigure(self.board.state[i][self.board.current_figure.x], self.currentPlayer):
+                        # current_figure['y'] = i
+                        self.board.current_figure = self.board.state[i][self.board.current_figure.x]
+                        # print("1" + str(self.board.current_figure.getPosition()))
+                        if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                            break
+                else:
+                    for j in range(self.board.current_figure.x - 1, -1, -1):
+                        # for j in range(7, -1, -1):
+                        for i in range(self.board.height-1, -1, -1):
+                            if self.board.isMyFigure(self.board.state[i][j], self.currentPlayer):
+                                self.board.current_figure = self.board.state[i][j]
+                                # print("2"+str(self.board.current_figure.getPosition()))
+                                if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                                    break
+                        else:
+                            continue
+                        break
+                    else:
+                        # print("3")
+                        for j in range(self.board.width-1, self.board.current_figure.x - 1, -1):
+                            # for j in range(7, -1, -1):
+                            for i in range(self.board.height-1, -1, -1):
+                                if self.board.isMyFigure(self.board.state[i][j], self.currentPlayer):
+                                    self.board.current_figure = self.board.state[i][j]
+                                    # print("3" + str(self.board.current_figure.getPosition()))
+                                    if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                                        break
+                            else:
+                                continue
+                            break
+            elif command == '':
+                # state[marker['x']][marker['y']] = currentPlayer
+                # changePlayerCount()
+                break
+            # draw(getTableContent(position=False))
+            self.render(position=False)
+            self.showPlayerCount()
 
     def moveFigure(self):
-        pass
+        def isMyFigureArea(ceil):
+            return ('m' in ceil) or ('k' in ceil)
+
+        def nextPlayer():
+            if self.board.currentPlayer == 'White':
+                self.board.currentPlayer = 'Black'
+            else:
+                self.board.currentPlayer = 'White'
+
+        def newMarker():
+            for i in range(self.board.height):
+                for j in range(self.board.width):
+                    if self.board.isMyFigure(self.board.state[i][j], self.currentPlayer):
+                        self.board.current_figure = self.board.state[i][j]
+                        self.board.current_position['y'] = i
+                        self.board.current_position['x'] = j
+                        if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                            break
+
+        # синхронизация (так как в select figure меняется только current_figure)
+        self.board.current_position['y'] = self.board.current_figure.y
+        self.board.current_position['x'] = self.board.current_figure.x
+
+        while True:
+            state = self.board.getFullState(self.currentPlayer, True, True)
+            # print(state)
+            command = input()
+            if command == "d":
+                for j in range(self.board.current_position['x'] + 1, self.board.width):
+                    if isMyFigureArea(state[self.board.current_position['y']][j]):
+                        self.board.current_position['x'] = j
+                        break
+                else:
+                    for i in range(self.board.current_position['y'] + 1, self.board.height):
+                        # for i in range(8):
+                        for j in range(self.board.width):
+                            if isMyFigureArea(state[i][j]):
+                                self.board.current_position['y'] = i
+                                self.board.current_position['x'] = j
+                                break
+                        else:
+                            continue
+                        break
+                    else:
+                        for i in range(0, self.board.current_position['y'] + 1):
+                            for j in range(self.board.width):
+                                if isMyFigureArea(state[i][j]):
+                                    self.board.current_position['y'] = i
+                                    self.board.current_position['x'] = j
+                                    break
+                            else:
+                                continue
+                            break
+            elif command == "s":
+                # print(state)
+                for i in range(self.board.current_position['y'] + 1, self.board.height):
+                    # print("fl do it" + str(i))
+                    if isMyFigureArea(state[i][self.board.current_position['x']]):
+                        # print("do it"+str(i))
+                        self.board.current_position['y'] = i
+                        break
+                else:
+                    for j in range(self.board.current_position['x'] + 1, self.board.width):
+                        # for j in range(8):
+                        for i in range(self.board.height):
+                            if isMyFigureArea(state[i][j]):
+                                self.board.current_position['y'] = i
+                                self.board.current_position['x'] = j
+                                break
+                        else:
+                            continue
+                        break
+                    else:
+                        for j in range(0, self.board.current_position['x'] + 1):
+                            for i in range(self.board.height):
+                                if isMyFigureArea(state[i][j]):
+                                    self.board.current_position['y'] = i
+                                    self.board.current_position['x'] = j
+                                    break
+                            else:
+                                continue
+                            break
+
+            elif command == "a":
+                for j in range(self.board.current_position['x'] - 1, -1, -1):
+                    if isMyFigureArea(state[self.board.current_position['y']][j]):
+                        self.board.current_position['x'] = j
+                        break
+                else:
+                    for i in range(self.board.current_position['y'] - 1, -1, -1):
+                        # for i in range(7, -1, -1):
+                        for j in range(self.board.width-1, -1, -1):
+                            if isMyFigureArea(state[i][j]):
+                                self.board.current_position['y'] = i
+                                self.board.current_position['x'] = j
+                                break
+                        else:
+                            continue
+                        break
+                    else:
+                        for i in range(self.board.height-1, self.board.current_position['y'] - 1, -1):
+                            for j in range(self.board.width-1, -1, -1):
+                                if isMyFigureArea(state[i][j]):
+                                    self.board.current_position['y'] = i
+                                    self.board.current_position['x'] = j
+                                    break
+                            else:
+                                continue
+                            break
+            elif command == "w":
+                for i in range(self.board.current_position['y'] - 1, -1, -1):
+                    if isMyFigureArea(state[i][self.board.current_position['x']]):
+                        self.board.current_position['y'] = i
+                        break
+                else:
+                    for j in range(self.board.current_position['x'] - 1, -1, -1):
+                        # for j in range(7, -1, -1):
+                        for i in range(self.board.height-1, -1, -1):
+                            if isMyFigureArea(state[i][j]):
+                                self.board.current_position['y'] = i
+                                self.board.current_position['x'] = j
+                                break
+                        else:
+                            continue
+                        break
+                    else:
+                        for j in range(self.board.width-1, self.board.current_position['x'] - 1, -1):
+                            for i in range(self.board.height-1, -1, -1):
+                                if isMyFigureArea(state[i][j]):
+                                    self.board.current_position['y'] = i
+                                    self.board.current_position['x'] = j
+                                    break
+                            else:
+                                continue
+                            break
+            elif command == '':
+                if self.board.current_figure.getPosition() == (self.board.current_position['y'], self.board.current_position['x']):
+                    # print("ret f")
+                    return True
+
+                # move()
+                killed = self.board.controller.move(self.board.current_figure,(self.board.current_position['y'], self.board.current_position['x']))
+                for kill in killed:
+                    self.playersCount[self.currentPlayer] += kill[-1]
+
+                self.board.isCheck(self.getMyEnemy())
+
+                break
+            elif command == 'q':
+                return True
+            # draw(getTableContent())
+            self.render()
+            self.showPlayerCount()
+        nextPlayer()
+        newMarker()
+        return True
 
     def showWinner(self):
         # мат
@@ -92,13 +395,12 @@ class Game:
         else:
             print('draw')
 
-
     def _getTableContent(self, moves=True, position=True):
         def getCellStyle(cell):
             def getCurrentColor():
-                if 'w' in cell:
+                if 'w' in str(cell):
                     return Fore.BLUE, Back.BLUE
-                elif 'b' in cell:
+                elif 'b' in str(cell):
                     return Fore.GREEN, Back.GREEN
                 elif self.currentPlayer == 'White':
                     return Fore.BLUE, Back.BLUE
@@ -134,7 +436,7 @@ class Game:
             else:
                 return ' ' + currentForeColor + cell + DEFAULTForeColor + ' '
 
-        fullState = self.board.getFullState(moves, position)
+        fullState = self.board.getFullState(self.currentPlayer, moves, position )
         # print("FULLSTATE")
         # print(fullState)
         tableContent = [[getCellStyle(fullState[i][j]) for j in range(8)] for i in range(8)]
