@@ -77,14 +77,17 @@ class Board:
                     self.current_figure.x])
             else:
                 # print("cf")
+                # print(self.current_figure.getPosition())
                 fullState[self.current_figure.y][self.current_figure.x] = 'c' + str(fullState[self.current_figure.y][
                     self.current_figure.x])
 
+            # print(player)
             # мои фигуры находящиеся под боем
             myFiguries = self.gelAllMyFiguries(player)
             for figure in myFiguries:
+                # print(figure)
                 if self.whoCanKilled(figure):
-                    y, x = figure
+                    y, x = figure.getPosition()
                     # print("AIM"+str(figure))
                     fullState[y][x] = 'a' + str(fullState[y][x])
 
@@ -116,11 +119,11 @@ class Board:
             #     print("KILLER")
             #     print(moves, kills)
             for move in moves:
-                if move == aim:
+                if move == aim.getPosition():
                     killers.append(enemy)
             for kill in kills:
 
-                if kill == aim:
+                if kill == aim.getPosition():
                     killers.append(enemy)
 
         return killers
@@ -140,7 +143,14 @@ class Board:
     # test ok
     def gelAllMyFiguries(self, player):
         # return getAllEnemies(getMyEnemy())
-        return self.getAllEnemies(player)
+        # return self.getAllEnemies()
+        figures = []
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.isMyFigure(self.state[y][x], player):
+                    figures.append(self.state[y][x])
+
+        return figures
 
     def isFigure(self,ceil):
         return isinstance(ceil,Figure)
@@ -173,3 +183,4 @@ class Board:
     def isCheck(self, player):
         king = self.getMyKing(player)
         self.check =self.whoCanKilled(king)
+        # print("CHECK"+str(self.check))

@@ -47,13 +47,17 @@ class Game:
             return 'White'
 
     def gameover(self):
+        # print(self.board.current_figure.getPosition())
         myFiguries = self.board.gelAllMyFiguries(self.currentPlayer)
+        # print(self.board.current_figure.getPosition())
         for figure in myFiguries:
             # moves, kills = figureMovesWithCheck(figure)
             moves, kills = self.board.controller.figureMoves(figure.getPosition())
             if moves or kills:
+                # print(self.board.current_figure.getPosition())
                 return False
         # print("GAMEOVER!")
+
         return True
 
     def render(self, moves = True, position = True):
@@ -231,10 +235,10 @@ class Game:
             return ('m' in ceil) or ('k' in ceil)
 
         def nextPlayer():
-            if self.board.currentPlayer == 'White':
-                self.board.currentPlayer = 'Black'
+            if self.currentPlayer == 'White':
+                self.currentPlayer = 'Black'
             else:
-                self.board.currentPlayer = 'White'
+                self.currentPlayer = 'White'
 
         def newMarker():
             for i in range(self.board.height):
@@ -244,7 +248,12 @@ class Game:
                         self.board.current_position['y'] = i
                         self.board.current_position['x'] = j
                         if self.board.controller.canMove(self.board.current_figure.getPosition()):
+                            # print(self.board.current_figure.getPosition())
                             break
+                else:
+                    continue
+                break
+
 
         # синхронизация (так как в select figure меняется только current_figure)
         self.board.current_position['y'] = self.board.current_figure.y
@@ -369,8 +378,10 @@ class Game:
 
                 # move()
                 killed = self.board.controller.move(self.board.current_figure,(self.board.current_position['y'], self.board.current_position['x']))
-                for kill in killed:
-                    self.playersCount[self.currentPlayer] += kill[-1]
+                # print(killed)
+                if killed:
+                    for kill in killed:
+                        self.playersCount[self.currentPlayer] += str(kill)[-1]
 
                 self.board.isCheck(self.getMyEnemy())
 
@@ -382,6 +393,8 @@ class Game:
             self.showPlayerCount()
         nextPlayer()
         newMarker()
+        # print(self.board.current_figure.getPosition())
+        # print("return")
         return True
 
     def showWinner(self):

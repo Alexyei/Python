@@ -221,9 +221,11 @@ class Controller:
                 checkShortCastling()
 
             neighbors = find_neighbors(y, x)
+
             for move in neighbors:
                 if safe:
                     # if not self.inSafe((y, x), move):
+
                     if not self.inSafe(current, move):
                         continue
                 checkCeilForAction(*move)
@@ -256,6 +258,9 @@ class Controller:
         # elif 'K' in current:
         elif type(current) == King:
             getKingAction()
+            # if current.player == 'Black':
+            #     print(moves)
+            #     print(kills)
 
         if safe:
             return getSafeMoves()
@@ -264,18 +269,30 @@ class Controller:
     # aim == Figure , move ,
     def inSafe(self, aim, move=None, guard=None):
         saved_state = copy.deepcopy(self.board.state)
+        save_position = aim.getPosition()
+        save_guard_position = None
         if move:
             # figure = self.board.state[aim[0]][aim[1]]
             figure = aim
             self.board.state[aim.y][aim.x] = '0'
             self.board.state[move[0]][move[1]] = figure
+            figure.y = move[0]
+            figure.x = move[1]
         if guard:
+            # global save_guard_position
             guard_figure, guard_move = guard
             self.board.state[guard_move[0]][guard_move[1]] = guard_figure
             self.board.state[guard_figure.y][guard_figure.x] = '0'
+            save_guard_position = guard_figure.getPosition()
         if move:
             result = not self.board.whoCanKilled(self.board.state[move[0]][move[1]])
+            aim.y = save_position[0]
+            aim.x = save_position[1]
         else:
+            if guard:
+                guard_figure, guard_move = guard
+                guard_figure.y = save_guard_position[0]
+                guard_figure.x = save_guard_position[1]
             result = not self.board.whoCanKilled(aim)
         self.board.state = saved_state
         # if move:
@@ -284,14 +301,24 @@ class Controller:
 
         return result
 
-    def move(self, figure, position, killed=[]):
+    def move(self, figure, position, killed=None):
         figureClasses = {'Queen': Queen, 'Knight': Knight, 'Bishop': Bishop, 'Rock': Rock}
         y,x = position
         if self.board.isFigure(self.board.state[y][x]):
+            if not killed:
+                killed = []
             killed.append(self.board.state[y][x])
-        result = figure.move(position, self.lastFigureMoved, (self.board.getSize()))
-        self.lastFigureMoved = figure
 
+        lastPosition = figure.getPosition()
+        result = figure.move(position, self.lastFigureMoved, (self.board.getSize()))
+
+        self.board.moved_figure.add(position)
+        self.board.moved_figure.add(figure.getPosition())
+        self.lastFigureMoved = figure
+        self.board.state[lastPosition[0]][lastPosition[1]] = '0'
+        self.board.state[figure.y][figure.x] = figure
+
+        # print(result)
         if result["status"] == 'move':
             figure = self.board.state[result["data"]["figure"][0]][result["data"]["figure"][1]]
             position = result["data"]["position"]
@@ -299,9 +326,12 @@ class Controller:
         elif result["status"] == 'transform':
             self.board.state[figure.y][figure.x] = figureClasses[result["data"]](figure.getPosition(),figure.player)
         elif result["status"] == 'kill':
+            if not killed:
+                killed = []
             killed.append(self.board.state[result["data"][0]][result["data"][1]])
             self.board.state[result["data"][0]][result["data"][1]] = '0'
 
+        # print("KILLED"+str(killed))
         return killed
 
     def canMove(self, figurePosition=None):
