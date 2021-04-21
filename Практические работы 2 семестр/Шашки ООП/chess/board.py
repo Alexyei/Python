@@ -115,7 +115,7 @@ class Board:
     def whoCanKilled(self, aim):
         enemies = self.getAllEnemies(aim.player)
         # enemies = getAllEnemies(getPlayerByFigure(state[aim[0]][aim[1]]))
-
+        y, x = aim.getPosition()
         killers = []
         for enemy in enemies:
 
@@ -123,13 +123,33 @@ class Board:
             # if (enemy == (3,1)):
             #     print("KILLER")
             #     print(moves, kills)
-            for move in moves:
-                if move == aim.getPosition():
-                    killers.append(enemy)
+            # for move in moves:
+            #     if move == aim.getPosition():
+            #         killers.append(enemy)
+            e_y, e_x = enemy.getPosition()
             for kill in kills:
+                k_y, k_x = kill
 
-                if kill == aim.getPosition():
-                    killers.append(enemy)
+                # вверх влево
+                if e_y > k_y and e_x > k_x:
+                    if y < e_y and x < e_x and y > k_y and x > k_x:
+                        killers.append(enemy)
+                        break
+                # вниз вправо
+                elif e_y < k_y and e_x < k_x:
+                    if y > e_y and x > e_x and y < k_y and x < k_x:
+                        killers.append(enemy)
+                        break
+                # вниз влево
+                elif e_y < k_y and e_x > k_x:
+                    if y > e_y and x < e_x and y < k_y and x > k_x:
+                        killers.append(enemy)
+                        break
+                # вверх вправо
+                elif e_y > k_y and e_x < k_x:
+                    if y < e_y and x > e_x and y > k_y and x < k_x:
+                        killers.append(enemy)
+                        break
 
         return killers
 

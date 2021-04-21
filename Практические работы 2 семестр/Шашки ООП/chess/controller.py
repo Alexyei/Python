@@ -390,28 +390,35 @@ class Controller:
     def move(self, figure, position, killed=None):
         figureClasses = {'King': King}
         y,x = position
+        kill = False
         # взятие
-        if (y - figure.y) == 2:
+        if abs(y - figure.y) == 2:
+            kill = True
+            print("KILL")
             # вниз вправо
             if y>figure.y and x>figure.x:
                 if not killed:
                     killed = []
+                print("DOWN RIGHT")
                 killed.append(self.board.state[y-1][x-1])
                 self.board.state[y-1][x-1] = '0'
             # вниз влево
             elif y>figure.y and x<figure.x:
+                print("DOWN LEFT")
                 if not killed:
                     killed = []
                 killed.append(self.board.state[y-1][x+1])
                 self.board.state[y-1][x+1] = '0'
             # вверх влево
             elif y < figure.y and x < figure.x:
+                print("UP LEFT")
                 if not killed:
                     killed = []
                 killed.append(self.board.state[y + 1][x + 1])
                 self.board.state[y + 1][x + 1] = '0'
             # вверх вправо
             else:
+                print("UP RIGHT")
                 if not killed:
                     killed = []
                 killed.append(self.board.state[y + 1][x - 1])
@@ -422,14 +429,14 @@ class Controller:
         #         killed = []
         #     killed.append(self.board.state[y][x])
         #
-        # lastPosition = figure.getPosition()
+        lastPosition = figure.getPosition()
         # result = figure.move(position, self.lastFigureMoved, (self.board.getSize()))
         result = figure.move(position, boardSize = self.board.getSize())
 
         # self.board.moved_figure.add(position)
         # self.board.moved_figure.add(figure.getPosition())
         # self.lastFigureMoved = figure
-        # self.board.state[lastPosition[0]][lastPosition[1]] = '0'
+        self.board.state[lastPosition[0]][lastPosition[1]] = '0'
         self.board.state[figure.y][figure.x] = figure
 
         # print(result)
@@ -442,7 +449,7 @@ class Controller:
             self.board.state[figure.y][figure.x] = figureClasses[result["data"]](figure.getPosition(),figure.player)
         else:
             moves, kills = self.aloneFigureMoves(figure)
-            if kills:
+            if kill and kills:
                 moveNext = True
         # elif result["status"] == 'kill':
         #     if not killed:

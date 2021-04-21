@@ -89,6 +89,12 @@ class Game:
 
     def selectFigure(self):
         while True:
+            # myFiguries = self.board.getAllMyFiguries(self.currentPlayer)
+            # # print(self.board.current_figure.getPosition())
+            # for figure in myFiguries:
+            #     # moves, kills = figureMovesWithCheck(figure)
+            #     moves, kills = self.board.controller.figureMoves(figure.getPosition())
+            #     print(moves,kills, figure.getPosition())
             command = input()
             if command == "d":
                 for j in range(self.board.current_figure.x + 1, self.board.width):
@@ -260,7 +266,7 @@ class Game:
             self.board.current_position['x'] = self.board.current_figure.x
 
         sync()
-
+        moveNext = False
         while True:
             state = self.board.getFullState(self.currentPlayer, True, True)
             # print(state)
@@ -376,6 +382,8 @@ class Game:
             elif command == '':
                 if self.board.current_figure.getPosition() == (self.board.current_position['y'], self.board.current_position['x']):
                     # print("ret f")
+                    if moveNext:
+                        continue
                     return True
 
                 # move()
@@ -392,6 +400,8 @@ class Game:
                 else:
                     break
             elif command == 'q':
+                if moveNext:
+                    continue
                 return True
             # draw(getTableContent())
             self.render()
@@ -404,14 +414,14 @@ class Game:
 
     def showWinner(self):
         # мат
-        if self.board.check:
-            if self.currentPlayer == 'White':
-                print("Black win!")
-            else:
-                print("White win!")
-        # пат
+        # if self.board.check:
+        if self.currentPlayer == 'White':
+            print("Black win!")
         else:
-            print('draw')
+            print("White win!")
+        # пат
+        # else:
+        #     print('draw')
 
     def _getTableContent(self, moves=True, position=True):
         def getCellStyle(cell):
