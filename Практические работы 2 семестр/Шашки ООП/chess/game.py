@@ -48,7 +48,7 @@ class Game:
 
     def gameover(self):
         # print(self.board.current_figure.getPosition())
-        myFiguries = self.board.gelAllMyFiguries(self.currentPlayer)
+        myFiguries = self.board.getAllMyFiguries(self.currentPlayer)
         # print(self.board.current_figure.getPosition())
         for figure in myFiguries:
             # moves, kills = figureMovesWithCheck(figure)

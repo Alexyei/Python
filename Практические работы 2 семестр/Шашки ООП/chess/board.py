@@ -16,7 +16,7 @@ class Board:
         # self.moved_figure = set()
         self.create_state()
         # self.current_figure = {'y': 6, 'x': 4}
-        self.current_figure = self.state[6][4]
+        self.current_figure = self.state[2][1]
         # self.current_position = {'y': 6, 'x': 4}
         self.current_position = {'y': self.current_figure.y, 'x': self.current_figure.x}
         self.controller = Controller(self)
@@ -27,28 +27,37 @@ class Board:
         self.state = [['0' for j in range(self.width)] for i in range(self.height)]
 
         # чёрные фигуры
-        self.state[0][0] = Rock((0,0),'Black')
-        self.state[0][7] = Rock((0, 7), 'Black')
-        self.state[0][1] = Knight((0, 1), 'Black')
-        self.state[0][6] = Knight((0, 6), 'Black')
-        self.state[0][2] = Bishop((0, 2), 'Black')
-        self.state[0][5] = Bishop((0, 5), 'Black')
-        self.state[0][3] = Queen((0, 3), 'Black')
-        self.state[0][4] = King((0, 4), 'Black')
-        for j in range(self.width):
-            self.state[1][j] = Pawn((1,j),'Black')
+        # self.state[0][0] = Rock((0,0),'Black')
+        # self.state[0][7] = Rock((0, 7), 'Black')
+        # self.state[0][1] = Knight((0, 1), 'Black')
+        # self.state[0][6] = Knight((0, 6), 'Black')
+        # self.state[0][2] = Bishop((0, 2), 'Black')
+        # self.state[0][5] = Bishop((0, 5), 'Black')
+        # self.state[0][3] = Queen((0, 3), 'Black')
+        # self.state[0][4] = King((0, 4), 'Black')
+        # for j in range(self.width):
+        #     self.state[1][j] = Pawn((1,j),'Black')
+
+        for i in range(3):
+            for j in range((i+1)%2,self.width,2):
+                self.state[i][j] = Pawn((i,j),'Black')
+
 
         # белые фигуры
-        self.state[7][0] = Rock((7, 0), 'White')
-        self.state[7][7] = Rock((7, 7), 'White')
-        self.state[7][1] = Knight((7, 1), 'White')
-        self.state[7][6] = Knight((7, 6), 'White')
-        self.state[7][2] = Bishop((7, 2), 'White')
-        self.state[7][5] = Bishop((7, 5), 'White')
-        self.state[7][3] = Queen((7, 3), 'White')
-        self.state[7][4] = King((7, 4), 'White')
-        for j in range(self.width):
-            self.state[6][j] = Pawn((6, j), 'White')
+        # self.state[7][0] = Rock((7, 0), 'White')
+        # self.state[7][7] = Rock((7, 7), 'White')
+        # self.state[7][1] = Knight((7, 1), 'White')
+        # self.state[7][6] = Knight((7, 6), 'White')
+        # self.state[7][2] = Bishop((7, 2), 'White')
+        # self.state[7][5] = Bishop((7, 5), 'White')
+        # self.state[7][3] = Queen((7, 3), 'White')
+        # self.state[7][4] = King((7, 4), 'White')
+        # for j in range(self.width):
+        #     self.state[6][j] = Pawn((6, j), 'White')
+
+        for i in range(self.height-1,4,-1):
+            for j in range((i+1)%2,self.width,2):
+                self.state[i][j] = Pawn((i,j),'White')
 
 
     # отобразить возможные ходы и выбор хода (position)
@@ -79,7 +88,7 @@ class Board:
 
             # print(player)
             # мои фигуры находящиеся под боем
-            myFiguries = self.gelAllMyFiguries(player)
+            myFiguries = self.getAllMyFiguries(player)
             for figure in myFiguries:
                 # print(figure)
                 if self.whoCanKilled(figure):

@@ -271,55 +271,61 @@ class Controller:
         # return moves, kills
 
     def aloneFigureMoves(self, figure):
-        moves = [], kills = []
+        moves = []
+        kills = []
         def blackPawnMoves():
             # возможно взятие
             if figure.y < self.board.height -2:
                 # возможно взятие справа
                 if figure.x < self.board.width -2:
-                    if self.board.isEnemy(self.board.state[figure.y+1][figure.x+1]) and self.board.isEmptyCeil(self.board.state[figure.y+2][figure.x+2]):
-                            kills.append(self.board.state[figure.y+2][figure.x+2])
+                    if self.board.isEnemy(self.board.state[figure.y+1][figure.x+1], figure.player) and self.board.isEmptyCeil(self.board.state[figure.y+2][figure.x+2]):
+                            # kills.append(self.board.state[figure.y+2][figure.x+2])
+                            kills.append((figure.y+2,figure.x+2))
                 # взятие слева
                 if figure.x > 1:
-                    if self.board.isEnemy(self.board.state[figure.y + 1][figure.x -1]) and self.board.isEmptyCeil(
+                    if self.board.isEnemy(self.board.state[figure.y + 1][figure.x -1], figure.player) and self.board.isEmptyCeil(
                             self.board.state[figure.y + 2][figure.x - 2]):
-                        kills.append(self.board.state[figure.y + 2][figure.x - 2])
+                        # kills.append(self.board.state[figure.y + 2][figure.x - 2])
+                        kills.append((figure.y + 2,figure.x - 2))
             if not kills:
                 # возможно сделать ход
                 if figure.y < self.board.height - 1:
                     # возможен ход вправо
                     if figure.x < self.board.width - 1:
                         if self.board.isEmptyCeil(self.board.state[figure.y + 1][figure.x +1]):
-                            moves.append(self.board.state[figure.y + 1][figure.x +1])
+                            # moves.append(self.board.state[figure.y + 1][figure.x +1])
+                            moves.append((figure.y + 1,figure.x +1))
                     # ход влево
                     if figure.x > 0:
                         if self.board.isEmptyCeil(self.board.state[figure.y + 1][figure.x - 1]):
-                            moves.append(self.board.state[figure.y + 1][figure.x - 1])
+                            # moves.append(self.board.state[figure.y + 1][figure.x - 1])
+                            moves.append((figure.y + 1,figure.x - 1))
 
         def whitePawnMoves():
             # возможно взятие
             if figure.y > 1:
                 # возможно взятие справа
                 if figure.x < self.board.width - 2:
-                    if self.board.isEnemy(self.board.state[figure.y - 1][figure.x + 1]) and self.board.isEmptyCeil(
+                    if self.board.isEnemy(self.board.state[figure.y - 1][figure.x + 1], figure.player) and self.board.isEmptyCeil(
                             self.board.state[figure.y - 2][figure.x + 2]):
-                        kills.append(self.board.state[figure.y - 2][figure.x + 2])
+                        # kills.append(self.board.state[figure.y - 2][figure.x + 2])
+                        kills.append((figure.y - 2,figure.x + 2))
                 # взятие слева
                 if figure.x > 1:
-                    if self.board.isEnemy(self.board.state[figure.y - 1][figure.x - 1]) and self.board.isEmptyCeil(
+                    if self.board.isEnemy(self.board.state[figure.y - 1][figure.x - 1], figure.player) and self.board.isEmptyCeil(
                         self.board.state[figure.y - 2][figure.x - 2]):
-                        kills.append(self.board.state[figure.y - 2][figure.x - 2])
+                        kills.append((figure.y - 2,figure.x - 2))
             if not kills:
                 # возможно сделать ход
                 if figure.y > 0:
                     # возможен ход вправо
                     if figure.x < self.board.width - 1:
                         if self.board.isEmptyCeil(self.board.state[figure.y - 1][figure.x +1]):
-                            moves.append(self.board.state[figure.y - 1][figure.x +1])
+                            moves.append((figure.y - 1,figure.x +1))
                     # ход влево
                     if figure.x > 0:
                         if self.board.isEmptyCeil(self.board.state[figure.y - 1][figure.x - 1]):
-                            moves.append(self.board.state[figure.y - 1][figure.x - 1])
+                            moves.append((figure.y - 1,figure.x - 1))
 
         def KingMoves():
             blackPawnMoves()
