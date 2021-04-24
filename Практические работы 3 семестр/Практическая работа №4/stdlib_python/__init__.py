@@ -1,0 +1,1 @@
+__all__ = ["color","instream","outstream","picture","stdarray","stdaudio","stddraw","stdio","stdrandom","stdstats"]
