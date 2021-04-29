@@ -1,6 +1,8 @@
 import datetime
 import socket
 
+# Проверять работу через браузер: http://127.0.0.1:8080/
+
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(('127.0.0.1',8080))
 server.listen(4)
