@@ -23,15 +23,19 @@ def connect(host: str = '127.0.0.1',port: int = 9090):
                 # Receive Message From Server
                 # If 'NICK' Send Nickname
                 message = s.recv(1024).decode(ENCODING)
+                print("message")
                 if message == 'FILE':
                     filename = s.recv(1024).decode(ENCODING)
-                    file = open(filename, "wb")
-                    image_chunk = s.recv(2048)  # stream-based protocol
+                    file = open("_client_folder/"+filename, "wb")
+                    file_chunk = s.recv(2048)  # stream-based protocol
 
-                    while image_chunk:
-                        file.write(image_chunk)
-                        image_chunk = s.recv(2048)
-
+                    while file_chunk:
+                        print(file_chunk)
+                        file.write(file_chunk)
+                        file_chunk = s.recv(2048)
+                        print(file_chunk)
+                        print("cicle")
+                    print("stop get")
                     file.close()
                     print("File "+filename+" gotten successfully!");
                 else:
@@ -47,6 +51,7 @@ def connect(host: str = '127.0.0.1',port: int = 9090):
             # message = '{}: {}'.format(nickname, input())
             message = input()
             s.send(message.encode(ENCODING))
+            print("send")
 
     # Starting Threads For Listening And Writing
     receive_thread = threading.Thread(target=receive)
@@ -72,6 +77,7 @@ def connect(host: str = '127.0.0.1',port: int = 9090):
 
 if __name__ == '__main__':
     os.system('cls')
-    nickname = input("Choose your nickname: ")
+    # nickname = input("Choose your nickname: ")
     print('Welcome to chat')
-    connect(nickname=nickname)
+    # nickname=nickname
+    connect()

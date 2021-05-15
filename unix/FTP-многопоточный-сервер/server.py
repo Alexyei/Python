@@ -29,7 +29,11 @@ def listen(host: str = '127.0.0.1',port: int = 9090):
         words = message.split(' ')
         if (len(words) == 0):
             return 'input command'
+        print(words)
         command = words[0]
+        print(command)
+        parametrs = words[1:]
+        print(parametrs)
 
         if command == 'pwd':
             return os.getcwd()
@@ -38,21 +42,40 @@ def listen(host: str = '127.0.0.1',port: int = 9090):
         elif command == 'exit':
             raise KeyboardInterrupt()
         elif command == 'mkdir':
-            os.mkdir("test_folder")
-            return "folder test_folder created successfully!"
+            if (len(parametrs)<1):
+                return 'need 1 parameter: folder name'
+            if os.path.isdir(parametrs[0]):
+                return "directory already exist!"
+            os.mkdir(parametrs[0])
+            print("created")
+            return "folder "+parametrs[0]+" created successfully!"
         elif command == 'rmtree':
-            shutil.rmtree("test_folder")
-            return "folder test_folder deleted successfully!"
+            if (len(parametrs) < 1):
+                return 'need 1 parameter: folder name'
+            if not os.path.isdir(parametrs[0]):
+                return "directory not found"
+            shutil.rmtree(parametrs[0])
+            return "folder "+parametrs[0]+" deleted successfully!"
         elif command == 'remove':
-            if os.path.isfile('test_file'):
-                os.remove("test_file")
-                return "file test_file deleted successfully!"
-            return "file not found"
+            if (len(parametrs) < 1):
+                return 'need 1 parameter: file name'
+            if not os.path.isfile(parametrs[0]):
+                return "file not found"
+            os.remove(parametrs[0])
+            return "file "+parametrs[0]+" deleted successfully!"
         elif command == 'rename':
-            os.rename('a.txt', 'b.kml')
-            return "file test_file renamed successfully!"
+            if (len(parametrs) < 2):
+                return 'need 2 parameter: current file name, new file name'
+            if not os.path.isfile(parametrs[0]):
+                return "file not found"
+            if os.path.isfile(parametrs[1]):
+                return "new file name already used"
+            os.rename(parametrs[0], parametrs[1])
+            return "file "+parametrs[0]+" renamed successfully!"
         elif command == 'send':
-            file = open('server_image.jpg', "wb")
+            if (len(parametrs) < 1):
+                return 'need 1 parameter: file name'
+            file = open(parametrs[0], "wb")
             image_chunk = client.recv(2048)  # stream-based protocol
 
             while image_chunk:
@@ -60,21 +83,26 @@ def listen(host: str = '127.0.0.1',port: int = 9090):
                 image_chunk = client.recv(2048)
 
             file.close()
-            return "file test_file gotten successfully!"
+            return "file "+parametrs[0]+" gotten successfully!"
         elif command == 'get':
-            if not os.path.isfile('test_file'):
+            if (len(parametrs) < 1):
+                return 'need 1 parameter: file name'
+            if not os.path.isfile(parametrs[0]):
                 return "file not found"
             client.send('FILE'.encode(ENCODING))
-            client.send('test_file.txt'.encode(ENCODING))
-            file = open('That_Sinking_Feeling_27.jpg', 'rb')
-            image_data = file.read(2048)
+            client.send(parametrs[0].encode(ENCODING))
+            file = open(parametrs[0], 'rb')
+            file_data = file.read(2048)
 
-            while image_data:
-                client.send(image_data)
-                image_data = file.read(2048)
+            while file_data:
+                print("1")
+                print(file_data)
+                client.send(file_data)
+                file_data = file.read(2048)
 
+            print("stop send")
             file.close()
-            return "file test_file sent successfully!"
+            return "file "+parametrs[0]+" sent successfully!"
         else:
             return 'command not found'
 
@@ -83,10 +111,17 @@ def listen(host: str = '127.0.0.1',port: int = 9090):
         while True:
             try:
                 # Broadcasting Messages
-                message = client.recv(1024)
+                message = client.recv(1024).decode(ENCODING)
                 # broadcast(message, client)
+                # print(message)
+                # print("result")
+                # print(process(message, client))
+                # print("end")
+
                 client.send(process(message, client).encode(ENCODING))
-            except:
+                # break
+            except Exception as e:
+                print(e)
                 # Removing And Closing Clients
                 # print("LEFT")
                 index = clients.index(client)
