@@ -23,19 +23,20 @@ def connect(host: str = '127.0.0.1',port: int = 9090):
                 # Receive Message From Server
                 # If 'NICK' Send Nickname
                 message = s.recv(1024).decode(ENCODING)
-                print("message")
+                # print("message")
                 if message == 'FILE':
                     filename = s.recv(1024).decode(ENCODING)
                     file = open("_client_folder/"+filename, "wb")
                     file_chunk = s.recv(2048)  # stream-based protocol
 
                     while file_chunk:
-                        print(file_chunk)
+                        if b'\x00' == file_chunk:
+                            break
                         file.write(file_chunk)
                         file_chunk = s.recv(2048)
-                        print(file_chunk)
-                        print("cicle")
-                    print("stop get")
+                        # print(file_chunk)
+                        # print("cicle")
+                    # print("stop get")
                     file.close()
                     print("File "+filename+" gotten successfully!");
                 else:
@@ -50,8 +51,36 @@ def connect(host: str = '127.0.0.1',port: int = 9090):
         while True:
             # message = '{}: {}'.format(nickname, input())
             message = input()
-            s.send(message.encode(ENCODING))
-            print("send")
+            if message.startswith("send "):
+                words = message.split(' ')
+                # command = words[0]
+                parametrs = words[1:]
+                if (len(parametrs) < 1):
+                    print('need 1 parameter: file name')
+                    continue
+                if not os.path.isfile("_client_folder/"+parametrs[0]):
+                    print("file not found")
+                    continue
+                s.send(message.encode(ENCODING))
+                # s.send('FILE'.encode(ENCODING))
+                # s.send(parametrs[0].encode(ENCODING))
+                file = open("_client_folder/"+parametrs[0], 'rb')
+                file_data = file.read(2048)
+
+                while file_data:
+                    # print("1")
+                    # print(file_data)
+                    s.send(file_data)
+                    file_data = file.read(2048)
+
+                # print("stop send")
+                file.close()
+                s.send(b'\x00')
+
+                print("file " + parametrs[0] + " sent successfully!")
+            else:
+                s.send(message.encode(ENCODING))
+            # print("send")
 
     # Starting Threads For Listening And Writing
     receive_thread = threading.Thread(target=receive)
@@ -60,20 +89,6 @@ def connect(host: str = '127.0.0.1',port: int = 9090):
     write_thread = threading.Thread(target=write)
     write_thread.start()
 
-    # # получаем сообщения от других пользователей в фоновом режиме
-    # threading.Thread(target=listen, args=(s,),daemon=True).start()
-    #
-    #
-    # s.sendto('__join'.encode(ENCODING),(host, port))
-    #
-    # while True:
-    #     try:
-    #         msg = input(f'you: ')
-    #     except KeyboardInterrupt as k:
-    #         s.sendto("__exit".encode(ENCODING), (host, port))
-    #         s.close()
-    #         exit()
-    #     s.sendto(msg.encode(ENCODING), (host, port))
 
 if __name__ == '__main__':
     os.system('cls')

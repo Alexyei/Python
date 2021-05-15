@@ -3,6 +3,8 @@ import shutil
 import socket
 import threading
 # UDP_MAX_SIZE = 65535
+import time
+
 ENCODING = "utf-8"
 
 
@@ -29,11 +31,11 @@ def listen(host: str = '127.0.0.1',port: int = 9090):
         words = message.split(' ')
         if (len(words) == 0):
             return 'input command'
-        print(words)
+        # print(words)
         command = words[0]
-        print(command)
+        # print(command)
         parametrs = words[1:]
-        print(parametrs)
+        # print(parametrs)
 
         if command == 'pwd':
             return os.getcwd()
@@ -76,11 +78,13 @@ def listen(host: str = '127.0.0.1',port: int = 9090):
             if (len(parametrs) < 1):
                 return 'need 1 parameter: file name'
             file = open(parametrs[0], "wb")
-            image_chunk = client.recv(2048)  # stream-based protocol
-
-            while image_chunk:
-                file.write(image_chunk)
-                image_chunk = client.recv(2048)
+            file_chunk = client.recv(2048)  # stream-based protocol
+            # print(file_chunk)
+            while file_chunk:
+                if b'\x00' == file_chunk:
+                    break
+                file.write(file_chunk)
+                file_chunk = client.recv(2048)
 
             file.close()
             return "file "+parametrs[0]+" gotten successfully!"
@@ -95,13 +99,15 @@ def listen(host: str = '127.0.0.1',port: int = 9090):
             file_data = file.read(2048)
 
             while file_data:
-                print("1")
-                print(file_data)
+                # print("1")
+                # print(file_data)
                 client.send(file_data)
                 file_data = file.read(2048)
 
-            print("stop send")
+            # print("stop send")
             file.close()
+            client.send(b'\x00')
+
             return "file "+parametrs[0]+" sent successfully!"
         else:
             return 'command not found'

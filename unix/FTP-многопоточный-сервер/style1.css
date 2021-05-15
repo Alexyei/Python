@@ -1,0 +1,8 @@
+            if (len(parametrs) < 1):
+                return 'need 1 parameter: file name'
+            file = open(parametrs[0], "wb")
+            image_chunk = client.recv(2048)  # stream-based protocol
+
+            while image_chunk:
+                file.write(image_chunk)
+                image_chunk = client.recv(2048)
